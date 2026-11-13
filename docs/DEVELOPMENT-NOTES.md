@@ -115,3 +115,11 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Added a preliminary ownership classification and a security-first audit checklist.
 - No application code or production resources changed.
 - Validation: source inspection only; audit remains in progress.
+
+### 2026-11-13 — Extended mail-flow and authorization audit
+- Extended `docs/ARCHITECTURE-AUDIT.md` in commit `23112bd88b313a5629bf673edc486c36b876b883`.
+- Traced mailbox membership helpers, thread/message access assertions, inbound exact/plus/catch-all resolution, installation-wide blocked-sender rules, provider selection, user upload ownership, and asynchronous jobs.
+- Confirmed that mailbox membership is a useful existing authorization layer, but there is no organisation membership or tenant boundary in the inspected auth model.
+- Added high-priority targets for route assertions, destructive admin actions, global suppressions, background jobs, foreign-key consistency, and tenant deletion/export/retention.
+- No application code, D1 migrations, DNS, or Cloudflare resources changed.
+- Validation: source inspection only; local quality commands remain unrun.
