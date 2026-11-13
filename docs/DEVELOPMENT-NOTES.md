@@ -1,0 +1,110 @@
+# NECROS Mail — Development Notes
+
+> Working project based on the upstream OpenInbox codebase. This document is maintained on the `development` branch. It is not a deployment guide and does not authorize production changes.
+
+## Repository and branch policy
+
+- Repository: `Necros-x/OpenInbox`
+- Upstream project: `sums001/OpenInbox`
+- Upstream license: MIT; retain the upstream `LICENSE` and applicable copyright/attribution notices in derivative distributions.
+- Protected working convention: all implementation and documentation work happens on `development`.
+- `main` is the untouched baseline/release branch. Do not commit, merge, or deploy to `main` without explicit approval.
+- Every commit must include a documentation update describing the change, rationale, affected areas, validation performed, and any follow-up work. Documentation-only commits must also record themselves in this log.
+- Keep credentials, Cloudflare tokens, recovery keys, private keys, and real mailbox data out of Git and chat.
+
+## Product direction
+
+Build a centrally operated, multi-organisation email platform for NECROS HOLDINGS and independent organisations that use the service.
+
+Initial intended organisation model:
+
+- **Platform owner:** NECROS HOLDINGS, with platform-wide administration.
+- **Internal organisations:** NECROS divisions such as Studio and Atelier, with organisation-scoped administration and membership.
+- **Independent organisations:** for example Nenasala, with their own organisation administrators and complete separation from NECROS business data and other customer organisations.
+- **Shared infrastructure:** one application and shared Cloudflare services may host multiple organisations only after server-side tenant isolation is proven.
+
+A central hostname such as `mail.necros.co` is the current direction, not a final DNS/deployment decision. Organisation-specific domains and mailbox domains must remain independently manageable.
+
+## Non-negotiable security requirements
+
+1. Every tenant-owned record must have an explicit, trusted organisation scope (directly or through a rigorously enforced parent relationship).
+2. Every API request must derive the caller's organisation memberships and permissions from the authenticated server-side session. Never trust a client-supplied organisation ID as authorization.
+3. Reads, writes, searches, exports, attachment access, background jobs, inbound routing, outbound sending, logs, and administrative operations must all enforce the same tenant boundary.
+4. Platform-owner privileges must be explicit, auditable, and separate from organisation-admin privileges.
+5. Organisation administrators must not be able to inspect or mutate another organisation's users, mailboxes, messages, domains, providers, credentials, settings, or audit records.
+6. Tenant isolation must be covered by automated negative tests (cross-tenant read/write attempts), not inferred from UI visibility.
+7. High-risk actions require audit events. Secrets must remain encrypted at rest and never be returned to ordinary clients.
+8. Do not attach real domains, change DNS, deploy a production Worker, or import real mail until the security and operational gates are signed off.
+
+## Baseline observations (initial repository inspection)
+
+The repository is a Cloudflare Worker + D1 + Vite/React application. The Worker handles HTTP API requests, Cloudflare Email Routing inbound messages, and scheduled jobs. The Wrangler configuration currently describes one Worker and one D1 binding. Optional attachment storage uses R2 through the application's storage adapter.
+
+The current schema and route structure are built around a single installation-wide administration model:
+
+- Authentication queries a global `users` table by email.
+- The admin API is mounted behind an admin requirement and exposes installation-wide users, mailboxes, domains, providers, settings, and operational data.
+- Mailbox membership exists, but that is not equivalent to organisation/tenant membership or organisation-level administration.
+- Mailbox, thread, message, attachment, domain, provider, and settings ownership must be traced through the schema and every query before any tenant model is designed.
+- Inbound email is routed by recipient address to a mailbox in the same D1 database; tenant resolution and enforcement must be designed into this path.
+- The README describes multiple domains and users, but does not promise isolated organisations or per-organisation admin boundaries.
+
+These are preliminary structural findings, not a completed security audit. No claim of tenant safety is made at this stage.
+
+## Architecture audit worklist
+
+- [ ] Map all D1 tables, foreign keys, indexes, and migration ordering.
+- [ ] Trace authentication, session creation, role checks, password recovery, and 2FA.
+- [ ] Trace every API route and service query for authorization and resource ownership.
+- [ ] Trace mailbox membership and shared inbox permissions.
+- [ ] Trace inbound email recipient resolution, aliases, catch-all, forwarding, and filters.
+- [ ] Trace outbound sending, provider credentials, sending-domain setup, and quotas.
+- [ ] Trace attachment/raw-message storage and download authorization across D1/R2.
+- [ ] Trace cron jobs, retries, retention, usage counters, logs, and audit events.
+- [ ] Review frontend route guards and organisation-context handling (UI checks are not security controls).
+- [ ] Review existing unit, integration, and end-to-end coverage; identify missing cross-tenant tests.
+- [ ] Run baseline lint, typecheck, unit/integration tests, and build in a local environment when available.
+
+## Planned delivery phases
+
+### Phase 0 — Baseline and threat model
+Complete the audit worklist, document the current single-installation assumptions, identify migration hazards, and define tenant isolation invariants. No product behavior changes.
+
+### Phase 1 — Tenant data model and authorization foundation
+Design organisations, memberships, scoped roles, platform roles, invitations, and ownership constraints. Add migrations and server-side authorization helpers only after the audit establishes a safe migration path.
+
+### Phase 2 — Tenant-scoped core resources
+Migrate users, domains, mailboxes, aliases, mailbox memberships, provider configuration, and settings to explicit organisation ownership. Preserve platform-level operations separately.
+
+### Phase 3 — Mail and storage isolation
+Enforce tenant scope for threads, messages, bodies, attachments, raw content, search, exports, inbound routing, outbound sending, scheduled tasks, and retries.
+
+### Phase 4 — Administration and onboarding
+Add platform owner controls, organisation admin workspaces, invitations, organisation lifecycle controls, audit visibility, and safe onboarding flows.
+
+### Phase 5 — Security verification
+Add cross-tenant denial tests for every resource family and operational path; test privilege escalation, identifier tampering, attachment URL access, background processing, and tenant deletion/retention behavior.
+
+### Phase 6 — Staging and operational readiness
+Use a spare/test domain and non-production Cloudflare resources. Validate Email Routing, provider delivery, DNS setup, quotas, backups/export, recovery, monitoring, and rollback before any production decision.
+
+## Engineering and verification rules
+
+- Prefer additive, reversible D1 migrations; never rewrite applied migration history.
+- Keep changes small enough to review, but group tightly related changes into coherent phases.
+- For every code commit, update this log or a linked focused document in the same commit.
+- Record exact commands and outcomes. Do not mark a check as passed unless it was actually run.
+- Before a phase is considered complete, run the relevant tests plus `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` where the local environment permits.
+- Review the diff for accidental secrets, generated files, unrelated formatting, and upstream license/attribution changes.
+- No automatic merge to `main`.
+
+## Commit record
+
+### 2026-11-13 — Development branch and project baseline
+- Created `development` from the repository's existing `main` branch.
+- Confirmed the authenticated GitHub connection has push/admin permission on `Necros-x/OpenInbox`.
+- Confirmed the repository default branch remains `main`; no changes were made to it.
+- Inspected repository metadata, root structure, package scripts, Wrangler configuration, README, Worker entry point, authentication route, admin route, inbound-mail service, and migration directory listing.
+- Initial finding: current configuration is one Worker + one D1 installation; the code exposes installation-wide administration and is not yet verified for organisation-level tenant isolation.
+- Validation: repository inspection only. Local lint, typecheck, tests, and build have not yet been run.
+- Next: complete the schema/query/auth/inbound/outbound/storage audit before proposing tenant migrations.
