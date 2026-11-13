@@ -108,3 +108,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Initial finding: current configuration is one Worker + one D1 installation; the code exposes installation-wide administration and is not yet verified for organisation-level tenant isolation.
 - Validation: repository inspection only. Local lint, typecheck, tests, and build have not yet been run.
 - Next: complete the schema/query/auth/inbound/outbound/storage audit before proposing tenant migrations.
+
+### 2026-11-13 — Initial architecture audit document
+- Added `docs/ARCHITECTURE-AUDIT.md` in commit `6eec525ce269ee59b7e3036d6c7f634e9e980f79`.
+- Recorded the confirmed single-installation architecture, current global role/admin model, mailbox membership limits, and the critical inbound/outbound/storage tenant boundaries.
+- Added a preliminary ownership classification and a security-first audit checklist.
+- No application code or production resources changed.
+- Validation: source inspection only; audit remains in progress.
