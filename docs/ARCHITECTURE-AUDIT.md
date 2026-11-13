@@ -124,3 +124,30 @@ This is a working classification to validate against every migration and query b
 ## Safety boundary
 
 No tenant schema migrations, production deployments, DNS changes, live domain connections, real mailbox imports, or credential changes have been made as part of this audit. Findings are based on source inspection and remain subject to full call-chain verification and executable tests.
+
+
+## Additional route and service tracing (2026-11-13)
+
+The following call-chain details were confirmed after the initial audit draft:
+
+- The Hono app applies CSRF protection, runs database migrations, loads global settings, and loads a session before mounting application routes. The `/admin/*` subtree is protected by `requireUser` and the global `requireAdmin` middleware.
+- The mail API's `mailboxScope`, `assertThread`, and `assertMessage` helpers use `mailbox_members` to authorize ordinary mailbox users. This is a useful existing access-control layer and should be retained as a narrower permission layer beneath organisation membership.
+- Thread list queries are generally constrained by the mailbox IDs supplied from accessible mailbox membership. Thread detail and message access rely on route-level assertions before service reads.
+- Some service functions intentionally accept bare resource IDs because they are called after route authorization. During tenant work, preserve this call-chain contract explicitly or strengthen the service interface so callers cannot accidentally skip authorization.
+- Inbound recipient resolution currently checks exact addresses, plus-address bases, then domain catch-all. The selected mailbox ID is used to create thread/message/body/attachment records. This flow needs a verified mailbox-to-organisation ownership check and a fail-closed tenant context.
+- The inbound path also consults blocked-sender rules, including rules with a null mailbox ID (installation-wide). These rules need explicit platform-vs-organisation semantics.
+- Outbound provider selection resolves a domain and uses provider/default/fallback records and quotas. This must become tenant-aware, including provider-domain verification and secret access.
+- The baseline includes installation-wide forwarding destinations, suppressions, usage counters, settings, and operational logs. These require explicit ownership classification rather than blindly assigning every row to a tenant.
+- User-uploaded draft attachments are tied to a user ID, while persisted mail attachments are tied to messages. Both paths need organisation/mailbox authorization and lifecycle handling.
+- Scheduled send/retry and retention/reparse jobs operate without an interactive user session. Each job must carry or derive tenant ownership from its database rows and must never trust a tenant identifier supplied by an external payload.
+
+### Newly identified high-priority audit targets
+
+1. Verify every route uses `assertMailbox`, `assertThread`, or `assertMessage` where appropriate, especially attachments, notes, labels, filters, drafts, scheduled messages, and sender-block rules.
+2. Review global admin operations and destructive actions (delete user/mailbox/domain, retry message, provider changes) for how they will be scoped by organisation.
+3. Define whether platform-wide suppressions and block rules are shared policy or organisation-owned policy; do not let one organisation silently affect another.
+4. Ensure every asynchronous job can identify the owning organisation through a trusted row relationship.
+5. Review foreign-key consistency between `messages.mailbox_id` and `threads.mailbox_id`; tenant migration should prevent mismatched mailbox/thread references.
+6. Define organisation deletion/export/retention behavior for D1 records and R2 objects.
+
+These are source-level findings. The full migration set, every route, and all query call chains still need exhaustive review and automated verification.
