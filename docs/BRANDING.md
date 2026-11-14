@@ -45,3 +45,12 @@ Create brand tokens and approved icon assets; implement consistent shell/auth sc
 - Updated browser/PWA metadata to use NECROS Mail, and removed old OpenInbox PNG icon references from the manifest and apple-touch link; new installable PNG assets still need to be supplied when the real logo is approved.
 - Kept upstream LICENSE and source attribution, existing worker name, cookie identifiers and database migrations untouched.
 - Code change validation: source-level transformation checks only; awaiting CI/test confirmation.
+
+## Phase 01B initial shell/auth implementation — 2026-11-14
+
+- Updated visible NECROS Mail/Inbox naming in the application shell, sign-in, setup flow, mobile mail sidebar and admin UI. The service's existing authentication, Cloudflare token verification, user roles and mailbox navigation logic were not changed.
+- Added the official tagline to authentication layout where no explanatory subtitle is given, and reduced-motion CSS support.
+- Enabled the existing GitHub CI workflow to run on `development` push events as well as main/master. CI run status must be reviewed independently.
+- Kept application product naming separate from the stored instance label for now; any plan to repurpose `instanceName` must avoid migrations that overwrite user data.
+- Retained original README guidance and added a prominent NECROS fork notice with pointers to active documentation.
+- Note: final logo, full Apple-inspired UI polishing and PWA raster icons are pending approval and visual testing.

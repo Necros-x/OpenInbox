@@ -153,3 +153,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Preserved: Worker/D1 config, actual mail code, session cookie keys, raw R2/email workflows, MIT LICENSE and upstream reference.
 - Validation: user reported baseline typecheck passed. This commit has not been locally linted, typechecked, unit-tested, or built in the assistant environment; CI must verify the changed tree.
 - Next: authenticate/shell visible naming, confirm UI appearance and final assets; run tests and fix any failures.
+
+### 2026-11-14 — Phase 01B: branded auth/shell and development CI
+- Reason: make NECROS Mail visible in the existing application flow and run automatic checks on development without altering APIs or mail processing.
+- Changed: AuthLayout/LoginPage, AppShell, mobile MailSidebar, SetupPage text, App fallback, admin labels/settings, reduced-motion CSS, README fork header, and GitHub workflow development push trigger.
+- Documented in BRANDING.md/ROADMAP.md. All current package scripts, backend routes, encryption/session identities, database schema and Cloudflare secrets remain unchanged.
+- Validation: user-reported baseline typecheck passing; changed commit still requires CI lint/typecheck/test/build/e2e review. No local automated checks were run here.
+- Follow-up: review GitHub Actions result, fix defects on development and inspect visual states before starting deeper authentication redesign.

@@ -29,9 +29,9 @@
 
 ### Batch 01B — Authentication and shell (planned)
 
-- [ ] Rebrand login, recovery, TOTP and setup pages without weakening auth or Cloudflare ownership claim.
+- [ ] Finish auth screen redesign; initial NECROS brand labels on login and setup completed (no logic changes).
 - [ ] Update title, manifest, favicon and public assets once final logo approved.
-- [ ] Implement accessible, responsive light/dark shell, consistent navigation/spacing and smooth transitions.
+- [ ] Finish accessible responsive shell; initial branding, light/dark tokens and reduced-motion handling added.
 - [ ] Preserve mailbox list, account switching, message navigation, modal/compose and keyboard shortcuts.
 - [ ] Avoid changing session cookie/local storage identifiers until a compatibility migration is designed.
 
@@ -100,3 +100,9 @@
 ## Commit rule
 
 Every implementation commit updates the appropriate focused documentation plus docs/DEVELOPMENT-NOTES.md (why, changed files, validation, outstanding tasks). Prefer small focused commits; never alter main without authorization.
+
+## Phase 01 implementation status — 2026-11-14
+
+- Initial branded base and visible auth/shell text committed as separate reviewable batches. These changes **do not** implement multi-tenancy, delivery gateway API keys, or production readiness.
+- Existing PNG PWA icons are no longer referenced while final artwork is pending; installable raster icons, visual testing and full authentication polish remain.
+- Development push CI now runs the pre-existing lint/typecheck/unit/build/e2e pipeline; results must be independently confirmed. The user reported a passing baseline typecheck before these commits, not a passing modified-tree typecheck.
