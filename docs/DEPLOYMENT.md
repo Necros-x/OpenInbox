@@ -70,3 +70,5 @@ GitHub only exposes `workflow_dispatch` for workflows present on a repository's 
 [GitHub Actions run 43627000830](https://github.com/Necros-x/OpenInbox/actions/runs/43627000830) passed the full tracked CI suite at commit `b69be75`: lint, typecheck, 88 Vitest passed / 1 skipped, build, and Playwright 1 passed / 1 skipped. A previously stale Playwright assertion was updated to the new NECROS Mail setup heading. These CI checks do **not** establish deploy success or production readiness.
 
 **Additional CI smoke test:** `scripts/check-preview-build.mjs` compiles an isolated preview artifact using a synthetic D1 ID and verifies the expected output configuration. This only tests packaging; real deployment still requires credentials and the scoped preview D1 resource.
+
+**Build-path discovery:** the Cloudflare Vite plugin normalizes `necros-mail-preview` to the environment/output directory `dist/necros_mail_preview`, while the Cloudflare Worker name remains `necros-mail-preview`. Both build-check and deploy scripts use the correct underscored directory.

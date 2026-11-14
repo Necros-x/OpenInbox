@@ -12,7 +12,7 @@ const generated = './wrangler.preview.generated.jsonc';
 writeFileSync(generated, JSON.stringify(config, null, 2) + '\n');
 const env = { ...process.env, CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH: generated };
 execFileSync('npm', ['run', 'build'], { stdio: 'inherit', env });
-if (!existsSync('dist/necros-mail-preview/wrangler.json')) {
-  throw new Error('Preview build did not output dist/necros-mail-preview/wrangler.json');
+if (!existsSync('dist/necros_mail_preview/wrangler.json')) {
+  throw new Error('Preview build did not output dist/necros_mail_preview/wrangler.json');
 }
 console.log('Preview bundle compiled with a separate Worker/D1 binding; no remote Cloudflare resources were accessed.');

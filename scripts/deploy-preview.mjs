@@ -47,7 +47,7 @@ const env = {
 };
 console.log('Building preview Worker with its own D1 binding...');
 execFileSync('npm', ['run', 'build'], { stdio: 'inherit', env });
-const outputConfig = 'dist/' + WORKER + '/wrangler.json';
+const outputConfig = 'dist/' + WORKER.replaceAll('-', '_') + '/wrangler.json';
 if (!existsSync(outputConfig)) throw new Error('Vite did not emit ' + outputConfig + '; refusing source-only deployment.');
 
 console.log('Deploying ' + WORKER + ' (not production or main)...');

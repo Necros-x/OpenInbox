@@ -190,3 +190,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Added `scripts/check-preview-build.mjs` and CI check after the main production build.
 - Runs a second Vite build with the preview Wrangler configuration and a synthetic D1 UUID solely to confirm `dist/necros-mail-preview/wrangler.json` is emitted; no Cloudflare token, D1 creation, DNS, provider or actual deployment is involved.
 - No change to production `wrangler.jsonc`. CI result pending following this commit.
+
+### 2026-11-14 — Fix preview output path discovered by CI
+- Preview smoke check in GitHub Actions `43627403130` successfully produced a separate Vite Worker bundle at `dist/necros_mail_preview/wrangler.json`, then failed on the script's incorrect assumption that Vite uses a hyphenated output directory.
+- Corrected both the non-deploy smoke check and actual isolated preview deployment script to use Vite's underscored environment directory. No Cloudflare resources accessed; production build and unit tests had passed before this extra check.
+- This fix requires a fresh CI run to confirm.
