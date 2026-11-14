@@ -151,3 +151,12 @@ The following call-chain details were confirmed after the initial audit draft:
 6. Define organisation deletion/export/retention behavior for D1 records and R2 objects.
 
 These are source-level findings. The full migration set, every route, and all query call chains still need exhaustive review and automated verification.
+
+
+## Handoff reconciliation — 2026-11-14
+
+The project is now officially **NECROS Mail**, with two distinct deliverables: **NECROS Inbox** webmail and an **application-facing NECROS Delivery gateway**. Existing mailbox send/provider functionality is not a substitute for a project API-key-authenticated gateway. `src/worker/services/quota.ts` currently applies quotas by provider, not by client/project.
+
+The existing `src/worker/services/send.ts` queue can retry a failed or interrupted delivery. For a new external gateway, ambiguous provider-acceptance outcomes are a **release-blocking duplicate-send risk** until a durable idempotency and reconciliation model is designed and tested. Mailbox UI, receiving through Cloudflare Email Routing, and outbound SMTP adapter are distinct; an IMAP server or inbound SMTP service was not found in the inspected Worker source.
+
+New source-aligned specifications: `PRODUCT-REQUIREMENTS.md`, `BRANDING.md`, `ARCHITECTURE.md`, `MAIL-INFRASTRUCTURE.md` and `MULTI-TENANCY.md`. Remaining source/security verification tasks and executable tests are not treated as complete.

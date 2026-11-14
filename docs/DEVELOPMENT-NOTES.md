@@ -123,3 +123,15 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Added high-priority targets for route assertions, destructive admin actions, global suppressions, background jobs, foreign-key consistency, and tenant deletion/export/retention.
 - No application code, D1 migrations, DNS, or Cloudflare resources changed.
 - Validation: source inspection only; local quality commands remain unrun.
+
+
+### 2026-11-14 — NECROS Mail product handoff and source-led planning
+- Confirmed official identity: NECROS Mail / NECROS Inbox, NECROS HOLDINGS, tagline “Email, refined.” This supersedes earlier provisional naming while preserving upstream license/attribution.
+- Read product handoff and inspected the `development` branch source structure, package, Wrangler, Vite config, Worker entry points, session and authorization middleware, D1 migrations, webmail/admin API inventory, provider adapters, sending/inbound/storage/webhook/cron services, frontend shell, style tokens and existing tests.
+- Added product requirements, branding, architecture, infrastructure and multi-tenancy documents. These distinguish verified existing functionality from proposed gateway/tenant functionality.
+- Source finding: current sending limits are per-provider, not per-organisation/project. Sending retries need idempotency and ambiguous-acceptance handling before becoming a client API.
+- Source finding: receiving is through Cloudflare Email Routing, not a built-in IMAP or incoming SMTP server. The SMTP adapter is an outbound sender.
+- Retained the six-phase security-first legacy plan above as historical baseline; the authoritative product-driven phases and Phase 01 scope are in `docs/ROADMAP.md`.
+- No application code, credentials, live infrastructure, or production mail was changed. Audit remains source-based; tests/build/lint/typecheck have not been executed by this GitHub-connected environment.
+- Follow-up: finish service-level permission matrix and baseline tests before changing database/tenant or delivery code.
+
