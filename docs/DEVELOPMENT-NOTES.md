@@ -146,3 +146,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 ### 2026-11-14 — Documentation commit-log follow-up
 - This commit records the previous focused documentation commit separately and keeps the per-commit change history current.
 - Validation: GitHub source read and branch write only; no executable validation.
+
+### 2026-11-14 — Phase 01A: brand foundation and safe environment examples
+- Reason: start approved NECROS Mail rebrand without changing authentication, mail routing, tenant scope or production infrastructure.
+- Files: shared product constants, new-installation name default, visual LogoMark placeholder, design tokens, favicon/manifest/index metadata, theme meta colour, Git ignore configuration, placeholder-only environment examples, and BRANDING.md/ROADMAP.md.
+- Preserved: Worker/D1 config, actual mail code, session cookie keys, raw R2/email workflows, MIT LICENSE and upstream reference.
+- Validation: user reported baseline typecheck passed. This commit has not been locally linted, typechecked, unit-tested, or built in the assistant environment; CI must verify the changed tree.
+- Next: authenticate/shell visible naming, confirm UI appearance and final assets; run tests and fix any failures.

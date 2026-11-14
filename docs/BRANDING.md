@@ -36,3 +36,12 @@ Avoid full-page reloads during folder/thread navigation; preserve list position 
 Create brand tokens and approved icon assets; implement consistent shell/auth screens, accessible light/dark and responsive flows without disabling existing setup, authentication or mail features. Check all end-user OpenInbox text and stale meta/manifest assets. Preserve the upstream attribution/license in legal/project files. Run tests and visual checks before moving past Phase 01.
 
 **No branding assets or UI changes were made during this documentation audit.**
+
+## Phase 01A implementation — 2026-11-14
+
+- Added official shared product constants and defaults for fresh instances; existing stored instance settings are not overwritten.
+- Replaced the former upstream icon with a **temporary NECROS N monogram**, pending the actual NECROS Mail logo. The monogram is explicitly not final artwork.
+- Applied initial off-white, charcoal and restrained bronze/gold system tokens and native-system typography in the existing Tailwind design layer. Actual NECROS brand color hex values still need approval.
+- Updated browser/PWA metadata to use NECROS Mail, and removed old OpenInbox PNG icon references from the manifest and apple-touch link; new installable PNG assets still need to be supplied when the real logo is approved.
+- Kept upstream LICENSE and source attribution, existing worker name, cookie identifiers and database migrations untouched.
+- Code change validation: source-level transformation checks only; awaiting CI/test confirmation.

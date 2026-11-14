@@ -1,0 +1,11 @@
+# Copy to .dev.vars only for local Cloudflare Worker development.
+# NEVER commit .dev.vars, share actual tokens, or expose them through VITE_* variables.
+# Use a securely generated 32+ character value; this is intentionally a placeholder.
+ENCRYPTION_KEY=replace-with-your-own-strong-local-only-secret
+
+# Only if local Cloudflare verification/setup requires it. Prefer mocked provider flows for UI work.
+# CF_API_TOKEN=replace-with-local-or-test-cloudflare-token
+
+# Tests can override provider bases against the mock server. Do not use actual credentials.
+# RESEND_API_BASE=http://127.0.0.1:8790/resend
+# BREVO_API_BASE=http://127.0.0.1:8790/brevo

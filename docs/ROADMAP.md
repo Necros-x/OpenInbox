@@ -23,8 +23,8 @@
 
 - [ ] Source-led baseline quality checks.
 - [ ] Confirm final wordmark/icon and gold/neutral palette; protect MIT attribution.
-- [ ] Establish brand constants, legal notices and theme tokens in a small reversible change.
-- [ ] Establish .dev.vars.example / .env.example (placeholders only), clarify current local Cloudflare setup behavior.
+- [x] Establish brand constants, preserve legal notices and introduce provisional theme tokens in a small reversible change (Phase 01A).
+- [x] Establish .dev.vars.example / .env.example (placeholders only); local Cloudflare setup still requires end-to-end verification.
 - [ ] Capture existing visual states to compare screenshots/regressions.
 
 ### Batch 01B — Authentication and shell (planned)
