@@ -185,3 +185,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Vitest result: **88 passed / 1 skipped**. Playwright: **1 passed / 1 skipped**. Skipped tests were not silently counted as passes. Prior E2E failure was the renamed setup heading assertion and was corrected in commit `b69be75`.
 - This verifies code on that SHA; later workflow/documentation changes still need their own CI status review, and **no Cloudflare deployment occurred**.
 - Remaining deployment blocker: owner must authorize Cloudflare Workers + D1 through the repository's scoped Actions credentials and explicit preview enable flag.
+
+### 2026-11-14 — Validate Cloudflare preview bundle without account access
+- Added `scripts/check-preview-build.mjs` and CI check after the main production build.
+- Runs a second Vite build with the preview Wrangler configuration and a synthetic D1 UUID solely to confirm `dist/necros-mail-preview/wrangler.json` is emitted; no Cloudflare token, D1 creation, DNS, provider or actual deployment is involved.
+- No change to production `wrangler.jsonc`. CI result pending following this commit.
