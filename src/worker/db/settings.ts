@@ -51,7 +51,7 @@ const NUMERIC = new Set<keyof AppSettings>(['setupCompletedAt', 'keyGeneratedAt'
 
 const DEFAULTS: AppSettings = {
   setupCompletedAt: null,
-  instanceName: 'OpenInbox',
+  instanceName: 'NECROS Mail',
   appUrl: null,
   cfAccountId: null,
   cfAccountName: null,

@@ -1,3 +1,7 @@
+> **NECROS Mail — development fork.** This repository is being adapted by NECROS HOLDINGS from the MIT-licensed OpenInbox project into **NECROS Mail** (webmail: **NECROS Inbox**, tagline: *Email, refined.*). Active product work is on [development](https://github.com/Necros-x/OpenInbox/tree/development); `main` retains the upstream baseline. The original OpenInbox documentation follows for its still-relevant Cloudflare setup instructions. See [our project roadmap](docs/ROADMAP.md) and [architecture audit](docs/ARCHITECTURE-AUDIT.md) before production use.
+
+---
+
 <div align="center">
 
 <picture>

@@ -61,7 +61,7 @@ function GeneralSettings() {
     <Card>
       <CardHeader icon={<Settings />} title="General" />
       <div className="grid gap-x-6 gap-y-[18px] px-5 pt-[18px] pb-5 md:grid-cols-2">
-        <Field label="Instance name" hint="Shown in the header and on the sign-in page.">
+        <Field label="Instance name" hint="Internal installation label. NECROS Mail branding is managed separately.">
           <Input value={s.instanceName} onChange={(e) => set('instanceName', e.target.value)} />
         </Field>
         <Field label="App address" hint="Used in webhook URLs and links. Set automatically at setup.">
@@ -265,7 +265,7 @@ function Maintenance() {
           <Button size="sm" onClick={() => setConfirm(true)} icon={<Key className="h-3.5 w-3.5" />}>
             Re-encrypt now
           </Button>
-          <span className="text-xs text-faint">OpenInbox {settings.data?.version}</span>
+          <span className="text-xs text-faint">NECROS Mail {settings.data?.version}</span>
         </div>
       </div>
       <ConfirmDialog

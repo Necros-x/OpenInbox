@@ -151,7 +151,7 @@ export function MailSidebar({
       {onClose && (
         <div className="flex items-center gap-2.5 px-4 pt-3 pb-2 md:hidden">
           <LogoMark size={24} />
-          <span className="flex-1 truncate text-[15px] font-semibold">{session?.instanceName ?? 'OpenInbox'}</span>
+          <span className="flex-1 truncate text-[15px] font-semibold">NECROS Inbox</span>
           <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-surface-2" aria-label="Close menu">
             <X className="h-[18px] w-[18px]" />
           </button>

@@ -9,6 +9,7 @@ import { useTheme, type Theme } from '../../lib/theme';
 import { cn } from '../../lib/utils';
 import { CommandPalette, KeyCombo, SHORTCUTS } from '../../pages/mail/CommandPalette';
 import { LogoMark } from '../Logo';
+import { APP_NAME, INBOX_NAME } from '../../../shared/constants';
 import { Dialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../ui/overlay';
 import { Avatar, Kbd } from '../ui/misc';
 
@@ -82,11 +83,11 @@ export function AppShell() {
       <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-bg pr-3 pl-3.5 sm:gap-5">
         <NavLink to="/" className="flex items-center gap-[9px] md:w-[230px]">
           <LogoMark size={22} />
-          <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{session?.instanceName ?? 'OpenInbox'}</span>
+          <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{APP_NAME}</span>
         </NavLink>
         <nav className="flex items-center gap-0.5">
-          {nav('/mail', 'Mail', Inbox)}
-          {isAdmin && nav('/admin', 'Admin', LayoutGrid)}
+          {nav('/mail', INBOX_NAME, Inbox)}
+          {isAdmin && nav('/admin', 'NECROS Admin', LayoutGrid)}
         </nav>
         <div className="flex-1" />
         <button
@@ -134,7 +135,7 @@ export function AppShell() {
           <MenuItem icon={<LogOut />} onClick={signOut}>
             Sign out
           </MenuItem>
-          <div className="px-2 pt-1.5 pb-1 text-[11px] text-faint">OpenInbox {session?.version}</div>
+          <div className="px-2 pt-1.5 pb-1 text-[11px] text-faint">{APP_NAME} {session?.version}</div>
         </Menu>
       </header>
       <main className="min-h-0 flex-1">

@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/geist';
+/* Prefer system typography (including SF Pro where the operating system provides it). */
 @import '@fontsource-variable/geist-mono';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -7,60 +7,58 @@
 /* Design tokens. Components use these through the Tailwind theme below, so light and dark
    themes are just two sets of variables. */
 :root {
-  --bg: #f6f6f8;
+  --bg: #f8f7f4;
   --surface: #ffffff;
-  --surface-2: #f1f1f4;
-  --surface-3: #e8e8ed;
-  --border: #e5e5ea;
-  --border-strong: #d2d2da;
-  --text: #16161d;
-  --text-muted: #5b5b68;
-  --text-faint: #8a8a97;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-soft: #eef0ff;
+  --surface-2: #f3f1ec;
+  --surface-3: #e9e6df;
+  --border: #e7e4dc;
+  --border-strong: #d3cfc4;
+  --text: #1e1d1b;
+  --text-muted: #595650;
+  --text-faint: #807b71;
+  --primary: #79571f;
+  --primary-hover: #654818;
+  --primary-soft: #f5efe3;
   --primary-fg: #ffffff;
-  /* Primary as text on soft backgrounds (active nav, links). */
-  --primary-text: #4338ca;
-  --danger: #d92d20;
-  --danger-soft: #fdeceb;
+  --primary-text: #75521d;
+  --danger: #c52720;
+  --danger-soft: #fcebe8;
   --success: #137a3f;
   --success-soft: #e6f5ec;
-  --warning: #b25a06;
+  --warning: #a15b09;
   --warning-soft: #fdf3e2;
-  --ring: rgb(79 70 229 / 0.42);
-  --scrim: rgb(22 22 29 / 0.28);
-  /* Background behind mail bodies, which are written for white. */
+  --ring: rgb(121 87 31 / 0.42);
+  --scrim: rgb(24 23 20 / 0.3);
   --reading: #ffffff;
-  --shadow: 0 1px 2px rgb(16 16 24 / 0.05), 0 1px 3px rgb(16 16 24 / 0.06);
-  --shadow-lg: 0 16px 40px -12px rgb(16 16 24 / 0.22), 0 4px 12px -4px rgb(16 16 24 / 0.1), 0 0 0 1px rgb(16 16 24 / 0.04);
+  --shadow: 0 1px 2px rgb(24 23 20 / 0.05), 0 1px 3px rgb(24 23 20 / 0.06);
+  --shadow-lg: 0 16px 40px -12px rgb(24 23 20 / 0.22), 0 4px 12px -4px rgb(24 23 20 / 0.1);
   color-scheme: light;
 }
 
 .dark {
-  --bg: #0d0d11;
-  --surface: #15151b;
-  --surface-2: #1c1c24;
-  --surface-3: #25252e;
-  --border: #25252e;
-  --border-strong: #363641;
-  --text: #ededf2;
-  --text-muted: #a1a1ae;
-  --text-faint: #6e6e7c;
-  --primary: #7c74ff;
-  --primary-hover: #918aff;
-  --primary-soft: #221f47;
-  --primary-fg: #ffffff;
-  --primary-text: #b3aeff;
+  --bg: #10100f;
+  --surface: #1b1a18;
+  --surface-2: #25231f;
+  --surface-3: #302d28;
+  --border: #322f2a;
+  --border-strong: #4a453d;
+  --text: #f2f0eb;
+  --text-muted: #b2ada2;
+  --text-faint: #928d82;
+  --primary: #d9bb83;
+  --primary-hover: #ebc993;
+  --primary-soft: #322b20;
+  --primary-fg: #191713;
+  --primary-text: #e4c68e;
   --danger: #f87171;
   --danger-soft: #351719;
   --success: #4ade80;
   --success-soft: #10301c;
   --warning: #fbbf24;
   --warning-soft: #32260e;
-  --ring: rgb(124 116 255 / 0.5);
+  --ring: rgb(217 187 131 / 0.52);
   --scrim: rgb(0 0 0 / 0.55);
-  --reading: #18181f;
+  --reading: #1b1a18;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-lg: 0 20px 48px -12px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.06);
   color-scheme: dark;
@@ -111,7 +109,7 @@
   --color-warning-soft: var(--warning-soft);
   --shadow-card: var(--shadow);
   --shadow-pop: var(--shadow-lg);
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, Roboto, Arial, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
 
@@ -269,4 +267,14 @@ body {
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 14px;
+}
+
+/* Honor reduced-motion preferences without changing app navigation behavior. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
