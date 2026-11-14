@@ -167,3 +167,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Safety: preview deploy requires secrets supplied independently by repository owner; no mail routing/DNS changes; no re-use of production Worker/D1; only `development` is eligible. Background crons disabled on preview.
 - GitHub Actions initially showed zero runs despite development pushes and draft PR #1. Local clone of public repo was unavailable due no network in the assistant shell; **lint, typecheck, test, build and deployment remain unverified** at time of commit.
 - Next: owner enables Actions/adds GitHub Secrets through phone, runs CI/preview workflow, inspect logs, fix any failures, share actual Cloudflare preview URL after success.
+
+### 2026-11-14 — Playwright branding-regression fix (commit b69be75)
+- CI for development passed lint, typecheck, unit/integration tests (88 passed, one skipped), and production build.
+- E2E failure was a stale expectation in `test/e2e/app.spec.ts`: the test looked for “Welcome to OpenInbox” after the setup screen was intentionally renamed “Welcome to NECROS Mail”.
+- Commit `b69be755f5d836788ece2cea8f886fa4a8cc7c87` updated the browser test to locate the new welcome heading by accessible role/name; no production behavior or code was modified.
+- Validation: failure diagnosed from GitHub Actions run `43626697554`; revised E2E result awaits a subsequent run.
