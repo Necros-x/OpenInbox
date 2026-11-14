@@ -64,3 +64,7 @@ A separate manual GitHub Actions workflow is now available in `.github/workflows
 ### Triggering this preview safely from a phone
 
 GitHub only exposes `workflow_dispatch` for workflows present on a repository's default branch. We do **not** put this preview workflow on `main`; it therefore also listens to **pushes to `development`**, but **all jobs are gated behind** the repository Actions variable `NECROS_MAIL_PREVIEW_ENABLED=true` (absent/false by default). It cannot deploy until this is deliberately enabled by the owner **and** both `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` secrets are available. After configuring them from GitHub Settings → Secrets and variables → Actions, ask the assistant to push an innocuous development-only documentation update to trigger the safe preview pipeline. No merge is required. Keep the variable disabled when previews are not needed.
+
+## Last verified code checks
+
+[GitHub Actions run 43627000830](https://github.com/Necros-x/OpenInbox/actions/runs/43627000830) passed the full tracked CI suite at commit `b69be75`: lint, typecheck, 88 Vitest passed / 1 skipped, build, and Playwright 1 passed / 1 skipped. A previously stale Playwright assertion was updated to the new NECROS Mail setup heading. These CI checks do **not** establish deploy success or production readiness.

@@ -114,3 +114,6 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [ ] Test setup and mobile layout; no production domains, providers or tenant data.
 
 - [x] Preview deploy gating hardened: `NECROS_MAIL_PREVIEW_ENABLED` repository variable defaults off; push to development only after explicit owner opt-in.
+
+- [x] CI verified on the branded application code (Actions run `43627000830`): lint, typecheck, 88 unit/integration tests, production build, Playwright 1 passed; each suite also had one skipped test.
+- [ ] Run and inspect the opt-in preview workflow against the new isolated Cloudflare staging Worker and D1; Cloudflare account access not yet provided.

@@ -178,3 +178,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Reason: workflows added solely on development cannot be assumed to expose a GitHub `workflow_dispatch` button because dispatch requires the file on the default branch.
 - Added a development-push trigger with job-level `NECROS_MAIL_PREVIEW_ENABLED == 'true'` opt-in. No auto preview deployment when variable is missing/false. Owner must configure scoped secrets and enable the repo variable before asking for a new development commit.
 - Documentation updated accordingly; this does not connect Cloudflare or run a deploy.
+
+### 2026-11-14 — CI verification on rebranded code
+- Run: [GitHub Actions 43627000830](https://github.com/Necros-x/OpenInbox/actions/runs/43627000830), at `b69be755f5d836788ece2cea8f886fa4a8cc7c87`.
+- `npm ci`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, Playwright browser installation and `npm run test:e2e` all succeeded on GitHub-hosted Node 24.
+- Vitest result: **88 passed / 1 skipped**. Playwright: **1 passed / 1 skipped**. Skipped tests were not silently counted as passes. Prior E2E failure was the renamed setup heading assertion and was corrected in commit `b69be75`.
+- This verifies code on that SHA; later workflow/documentation changes still need their own CI status review, and **no Cloudflare deployment occurred**.
+- Remaining deployment blocker: owner must authorize Cloudflare Workers + D1 through the repository's scoped Actions credentials and explicit preview enable flag.
