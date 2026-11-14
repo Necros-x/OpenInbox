@@ -135,3 +135,14 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - No application code, credentials, live infrastructure, or production mail was changed. Audit remains source-based; tests/build/lint/typecheck have not been executed by this GitHub-connected environment.
 - Follow-up: finish service-level permission matrix and baseline tests before changing database/tenant or delivery code.
 
+
+### 2026-11-14 — Security, data and deployment planning (commit fd16351)
+- Added `docs/SECURITY.md`, `docs/DATABASE.md`, `docs/DEPLOYMENT.md` and `docs/ROADMAP.md` in commit `fd16351ed00ab2fe212b95c7e18999b50e1cf36a`.
+- Established source-derived security gates, existing D1 table-family inventory, additive migration plan, environment/deployment rules, and six-phase delivery plan including Phase 01 batches.
+- Reconciled the user-specified phase order with the security dependency: organisation/project ownership and authorization must exist before any external multi-client gateway is enabled.
+- Audit remains based on source inspection; no lint/typecheck/test/build or deployed system checks have been executed in this environment.
+- No code, database, DNS, secrets, mail delivery or main branch changed.
+
+### 2026-11-14 — Documentation commit-log follow-up
+- This commit records the previous focused documentation commit separately and keeps the per-commit change history current.
+- Validation: GitHub source read and branch write only; no executable validation.
