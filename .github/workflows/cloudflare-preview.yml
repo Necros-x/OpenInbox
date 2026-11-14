@@ -1,7 +1,10 @@
 name: NECROS Mail Cloudflare Preview (manual)
 
-# Manual only: never deploys production, main, mail.necros.co or existing mailboxes.
+# Disabled until owner opts in with a GitHub Actions repository variable.
+# Never deploys production, main, mail.necros.co or existing mailboxes.
 on:
+  push:
+    branches: [development]
   workflow_dispatch:
 
 permissions:
@@ -10,7 +13,7 @@ permissions:
 jobs:
   check:
     name: Verify development before preview
-    if: github.ref == 'refs/heads/development'
+    if: github.ref == 'refs/heads/development' && vars.NECROS_MAIL_PREVIEW_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

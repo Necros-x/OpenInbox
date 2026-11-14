@@ -112,3 +112,5 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [ ] Owner enables GitHub Actions and configures scoped Cloudflare GitHub Actions secrets.
 - [ ] Verify CI quality gates and public test-only `workers.dev` URL.
 - [ ] Test setup and mobile layout; no production domains, providers or tenant data.
+
+- [x] Preview deploy gating hardened: `NECROS_MAIL_PREVIEW_ENABLED` repository variable defaults off; push to development only after explicit owner opt-in.

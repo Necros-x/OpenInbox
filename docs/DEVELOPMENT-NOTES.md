@@ -173,3 +173,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - E2E failure was a stale expectation in `test/e2e/app.spec.ts`: the test looked for “Welcome to OpenInbox” after the setup screen was intentionally renamed “Welcome to NECROS Mail”.
 - Commit `b69be755f5d836788ece2cea8f886fa4a8cc7c87` updated the browser test to locate the new welcome heading by accessible role/name; no production behavior or code was modified.
 - Validation: failure diagnosed from GitHub Actions run `43626697554`; revised E2E result awaits a subsequent run.
+
+### 2026-11-14 — Preview trigger compatibility and opt-in gate
+- Reason: workflows added solely on development cannot be assumed to expose a GitHub `workflow_dispatch` button because dispatch requires the file on the default branch.
+- Added a development-push trigger with job-level `NECROS_MAIL_PREVIEW_ENABLED == 'true'` opt-in. No auto preview deployment when variable is missing/false. Owner must configure scoped secrets and enable the repo variable before asking for a new development commit.
+- Documentation updated accordingly; this does not connect Cloudflare or run a deploy.
