@@ -117,3 +117,5 @@ Every implementation commit updates the appropriate focused documentation plus d
 
 - [x] CI verified on the branded application code (Actions run `43627000830`): lint, typecheck, 88 unit/integration tests, production build, Playwright 1 passed; each suite also had one skipped test.
 - [ ] Run and inspect the opt-in preview workflow against the new isolated Cloudflare staging Worker and D1; Cloudflare account access not yet provided.
+
+- [x] Preview artifact compiles in GitHub Actions without credentials (run `43627564907` at `b870a44`); full CI including Playwright passed.

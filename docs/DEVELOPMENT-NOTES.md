@@ -195,3 +195,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Preview smoke check in GitHub Actions `43627403130` successfully produced a separate Vite Worker bundle at `dist/necros_mail_preview/wrangler.json`, then failed on the script's incorrect assumption that Vite uses a hyphenated output directory.
 - Corrected both the non-deploy smoke check and actual isolated preview deployment script to use Vite's underscored environment directory. No Cloudflare resources accessed; production build and unit tests had passed before this extra check.
 - This fix requires a fresh CI run to confirm.
+
+### 2026-11-14 — Preview compilation and regression suite confirmed green
+- Verified GitHub Actions run [43627564907](https://github.com/Necros-x/OpenInbox/actions/runs/43627564907) at commit `b870a44c50a248669bd520ac3b1d8b8281038337` completed successfully: CI lint, typecheck, Vitest, build, isolated preview bundle compile and Playwright E2E.
+- The preview bundle now compiles to `dist/necros_mail_preview/wrangler.json`; this packaging step uses a synthetic D1 binding ID and does not call Cloudflare APIs or deploy.
+- Real Cloudflare deployment is **not performed**. The opt-in preview workflow correctly skipped while `NECROS_MAIL_PREVIEW_ENABLED` remains unset/false. No DNS/mailboxes/provider settings changed. Await explicit owner-set repository secrets and preview variable before any development push attempts an actual preview.

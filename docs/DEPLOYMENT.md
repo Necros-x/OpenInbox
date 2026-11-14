@@ -72,3 +72,5 @@ GitHub only exposes `workflow_dispatch` for workflows present on a repository's 
 **Additional CI smoke test:** `scripts/check-preview-build.mjs` compiles an isolated preview artifact using a synthetic D1 ID and verifies the expected output configuration. This only tests packaging; real deployment still requires credentials and the scoped preview D1 resource.
 
 **Build-path discovery:** the Cloudflare Vite plugin normalizes `necros-mail-preview` to the environment/output directory `dist/necros_mail_preview`, while the Cloudflare Worker name remains `necros-mail-preview`. Both build-check and deploy scripts use the correct underscored directory.
+
+**Verified preview bundle checks (2026-11-14):** [CI run 43627564907](https://github.com/Necros-x/OpenInbox/actions/runs/43627564907) succeeded, including the second Vite preview compilation and Playwright E2E. This is still a build-only verification, not an actual Cloudflare deployment.
