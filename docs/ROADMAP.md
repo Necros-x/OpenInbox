@@ -106,3 +106,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - Initial branded base and visible auth/shell text committed as separate reviewable batches. These changes **do not** implement multi-tenancy, delivery gateway API keys, or production readiness.
 - Existing PNG PWA icons are no longer referenced while final artwork is pending; installable raster icons, visual testing and full authentication polish remain.
 - Development push CI now runs the pre-existing lint/typecheck/unit/build/e2e pipeline; results must be independently confirmed. The user reported a passing baseline typecheck before these commits, not a passing modified-tree typecheck.
+
+## Phone-accessible staging preview — 2026-11-14
+- [x] Prepared manual GitHub Action with lint/typecheck/unit/build gate, isolated preview Worker and D1 config.
+- [ ] Owner enables GitHub Actions and configures scoped Cloudflare GitHub Actions secrets.
+- [ ] Verify CI quality gates and public test-only `workers.dev` URL.
+- [ ] Test setup and mobile layout; no production domains, providers or tenant data.

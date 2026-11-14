@@ -19,7 +19,7 @@ Run npm ci, npm run dev with an appropriate local mock/testing setup. Use docume
 - Public build-time environment configuration can use Vite when appropriate, but never use VITE_* for provider keys or database secrets.
 - Remote Cloudflare secrets belong in Worker secret storage; DB is a binding, not a SQL credential in browser code.
 - Protect recovery/encryption key material and validate rotation/recovery strategy.
-- **Caution:** .gitignore currently contains a broad docs ignore entry, even though documentation files are tracked. Preserve tracked docs and inspect ignore behavior before relying on new local docs being automatically detected by Git.
+- The broad `docs` ignore entry was removed during Phase 01 to allow new documentation files to be tracked.
 
 ## Intended hostnames — proposals
 
@@ -49,3 +49,13 @@ npm run test:e2e
 ## Upstream obligations
 
 Retain MIT LICENSE and original notices. Maintain source attribution where required. Upstream syncing must be intentional and must not overwrite NECROS changes.
+
+## Cloudflare phone preview (prepared, NOT deployed)
+
+A separate manual GitHub Actions workflow is now available in `.github/workflows/cloudflare-preview.yml`. It builds and tests `development`, then deploys a dedicated **necros-mail-preview** Worker and a dedicated **necros-mail-preview** D1 database. It never modifies `main`, production `wrangler.jsonc`, MX/DNS records, routes, providers, accounts or production email. The preview uses its own `wrangler.preview.jsonc` and `scripts/deploy-preview.mjs`; scheduled jobs are disabled.
+
+**This workflow requires the account owner's participation:** the connected GitHub app cannot create Cloudflare resources or GitHub repository secrets. From a mobile browser, open GitHub repository **Settings > Secrets and variables > Actions** and provide `CLOUDFLARE_API_TOKEN` (a scoped Worker + D1 deployment token) and `CLOUDFLARE_ACCOUNT_ID` as secrets. Do not paste either into chat or commit them. If this fork's GitHub Actions are disabled, enable them in the repository Actions tab. Navigate to **Actions > NECROS Mail Cloudflare Preview (manual) > Run workflow > development**. Verify the check job and deploy job succeed. The deploy logs print the actual `workers.dev` preview URL; never guess it in advance.
+
+**Preview limitation:** the real Worker app requires Cloudflare setup/owner claim; visiting an unclaimed Worker shows the setup flow, not a bypassed/authenticated inbox. Don't connect a real email domain just to test the UI. The preview remains public unless protected with Cloudflare Access; use test data only, and do not claim client isolation is production-safe. An eventual Cloudflare Workers Builds connection may instead use isolated Worker Previews, but it needs owner configuration and preview D1 bindings. No staging credentials or production mailboxes were used here.
+
+**Check note (2026-11-14):** the source checkout was not available in the isolated assistant shell (no GitHub network DNS). GitHub Actions reported zero runs after pushing development and opening draft PR #1; these local/CI checks remain unverified. Manual workflows are intended to address this once GitHub Actions is enabled by the repository owner.

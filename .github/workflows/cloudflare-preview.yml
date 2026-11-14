@@ -1,0 +1,57 @@
+name: NECROS Mail Cloudflare Preview (manual)
+
+# Manual only: never deploys production, main, mail.necros.co or existing mailboxes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Verify development before preview
+    if: github.ref == 'refs/heads/development'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  preview:
+    name: Deploy isolated Worker + D1 preview
+    needs: check
+    runs-on: ubuntu-latest
+    environment: necros-mail-preview
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require Cloudflare deploy credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Configure both CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID as GitHub Actions secrets before running this workflow."
+            exit 1
+          fi
+      - name: Create/update isolated preview (no DNS, mail routes or production writes)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/deploy-preview.mjs
+      - name: Preview follow-up
+        run: |
+          echo "### NECROS Mail preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "Look in the deploy step for the workers.dev URL returned by Cloudflare." >> "$GITHUB_STEP_SUMMARY"
+          echo "The unclaimed instance will show setup until a development owner claims it. No email domains or providers are connected." >> "$GITHUB_STEP_SUMMARY"

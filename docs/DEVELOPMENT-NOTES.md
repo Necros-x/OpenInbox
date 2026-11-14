@@ -160,3 +160,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Documented in BRANDING.md/ROADMAP.md. All current package scripts, backend routes, encryption/session identities, database schema and Cloudflare secrets remain unchanged.
 - Validation: user-reported baseline typecheck passing; changed commit still requires CI lint/typecheck/test/build/e2e review. No local automated checks were run here.
 - Follow-up: review GitHub Actions result, fix defects on development and inspect visual states before starting deeper authentication redesign.
+
+### 2026-11-14 — Prepare test-only Cloudflare preview and mobile validation (not deployed)
+- Motivation: owner temporarily lacks PC and requested an accessible phone preview and independently executed checks.
+- Added manual `cloudflare-preview.yml`, standalone Wrangler preview config, deployment script which creates/uses `necros-mail-preview` D1 only, GitHub Actions `workflow_dispatch` for CI and generated config ignore.
+- Safety: preview deploy requires secrets supplied independently by repository owner; no mail routing/DNS changes; no re-use of production Worker/D1; only `development` is eligible. Background crons disabled on preview.
+- GitHub Actions initially showed zero runs despite development pushes and draft PR #1. Local clone of public repo was unavailable due no network in the assistant shell; **lint, typecheck, test, build and deployment remain unverified** at time of commit.
+- Next: owner enables Actions/adds GitHub Secrets through phone, runs CI/preview workflow, inspect logs, fix any failures, share actual Cloudflare preview URL after success.
