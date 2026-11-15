@@ -1,5 +1,5 @@
 // Deploy an isolated NECROS Mail *test* Worker and D1 database. Does not connect email routing.
-// Explicitly manual CI only: requires GitHub Actions secrets, never uses production config.
+// Accepts a known preview-only D1 UUID from Workers Builds, or GitHub Actions secrets. Never uses production config.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
@@ -7,8 +7,12 @@ const WORKER = 'necros-mail-preview';
 const DATABASE = 'necros-mail-preview';
 const GENERATED = 'wrangler.preview.generated.jsonc';
 
-if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID) {
-  throw new Error('Cloudflare preview credentials are missing. Set GitHub Actions secrets, not source-code variables.');
+const configuredDbId = process.env.NECROS_MAIL_PREVIEW_D1_ID;
+if (!configuredDbId && (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID)) {
+  throw new Error('Preview database ID or scoped GitHub Actions Cloudflare credentials are required.');
+}
+if (configuredDbId && !/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(configuredDbId)) {
+  throw new Error('NECROS_MAIL_PREVIEW_D1_ID must be a valid preview-only D1 UUID.');
 }
 
 function wrangler(...args) {
@@ -19,18 +23,20 @@ function wrangler(...args) {
   });
 }
 
-console.log('Checking for isolated preview D1 database...');
-let databases = JSON.parse(wrangler('d1', 'list', '--json'));
-if (!Array.isArray(databases)) throw new Error('Unexpected Wrangler D1 list response.');
-let db = databases.find((item) => item.name === DATABASE);
-if (!db) {
-  console.log('Creating preview-only D1 database...');
-  // Do not update the production wrangler.jsonc config during creation.
-  wrangler('d1', 'create', DATABASE);
-  databases = JSON.parse(wrangler('d1', 'list', '--json'));
-  db = databases.find((item) => item.name === DATABASE);
+let databaseId = configuredDbId;
+if (!databaseId) {
+  console.log('Checking for isolated preview D1 database...');
+  let databases = JSON.parse(wrangler('d1', 'list', '--json'));
+  if (!Array.isArray(databases)) throw new Error('Unexpected Wrangler D1 list response.');
+  let db = databases.find((item) => item.name === DATABASE);
+  if (!db) {
+    console.log('Creating preview-only D1 database...');
+    wrangler('d1', 'create', DATABASE);
+    databases = JSON.parse(wrangler('d1', 'list', '--json'));
+    db = databases.find((item) => item.name === DATABASE);
+  }
+  databaseId = db?.uuid ?? db?.id;
 }
-const databaseId = db?.uuid ?? db?.id;
 if (typeof databaseId !== 'string' || !databaseId) throw new Error('Could not resolve isolated preview database ID.');
 
 const config = JSON.parse(readFileSync('wrangler.preview.jsonc', 'utf8'));

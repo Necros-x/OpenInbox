@@ -206,3 +206,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Cloudflare preview Worker `necros-mail-preview` and D1 `necros-mail-preview` did not exist during the account inspection. Existing Nenasala Worker/database resources were untouched.
 - The previous full CI run succeeded; the separate GitHub Actions preview deployment remains opt-in, and this documentation commit triggers a permissions/enablement check on `development`.
 - Do not treat access in the ChatGPT Cloudflare connector as a GitHub Actions secret. Do not connect DNS, provider credentials or live email during preview creation.
+
+### 2026-11-15 — Prepare Cloudflare Builds preview deployment
+- Verified authenticated Cloudflare account access. Connected `Necros-x/OpenInbox` to Cloudflare Builds; created only an isolated `necros-mail-preview` D1 database and an isolated `necros-mail-preview` placeholder Worker, leaving Nenasala resources untouched.
+- Adapted `scripts/deploy-preview.mjs` to accept a validated `NECROS_MAIL_PREVIEW_D1_ID` for Workers Builds as an alternative to GitHub Actions scoped credentials; it still only accepts the named preview Worker and DB.
+- Configuration is intended to use `development` as the deployment branch for the isolated preview Worker, not production `main`. No DNS, MX, Email Routing, or sender provider changes.
+- Validation: CI and Cloudflare execution to follow. No claims of live full-app deployment until the build and Worker response are verified.
