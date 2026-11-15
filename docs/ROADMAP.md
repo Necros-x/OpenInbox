@@ -119,3 +119,7 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [ ] Run and inspect the opt-in preview workflow against the new isolated Cloudflare staging Worker and D1; Cloudflare account access not yet provided.
 
 - [x] Preview artifact compiles in GitHub Actions without credentials (run `43627564907` at `b870a44`); full CI including Playwright passed.
+
+- [x] Isolated `development` Cloudflare Worker and D1 created; Cloudflare build successful and preview URL established (2026-11-15).
+- [ ] Verify the preview's mobile rendering and login/setup experience in a real phone browser, using test-only data.
+- [ ] Implement tenant isolation before onboarding any independent organisations or real production mail.

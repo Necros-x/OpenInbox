@@ -212,3 +212,12 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Adapted `scripts/deploy-preview.mjs` to accept a validated `NECROS_MAIL_PREVIEW_D1_ID` for Workers Builds as an alternative to GitHub Actions scoped credentials; it still only accepts the named preview Worker and DB.
 - Configuration is intended to use `development` as the deployment branch for the isolated preview Worker, not production `main`. No DNS, MX, Email Routing, or sender provider changes.
 - Validation: CI and Cloudflare execution to follow. No claims of live full-app deployment until the build and Worker response are verified.
+
+### 2026-11-15 — Isolated Cloudflare Worker preview deployed
+- User connected their Cloudflare account through the Cloudflare integration; verified the account had Nenasala resources but no existing NECROS Mail Worker or preview D1 database.
+- Connected `Necros-x/OpenInbox` to Cloudflare Builds. Created a new, dedicated `necros-mail-preview` D1 database and `necros-mail-preview` Worker. Existing `nenasala-peradeniya` Worker and all Nenasala databases remained unchanged.
+- Configured Cloudflare Builds for the **`development`** branch only, using `scripts/deploy-preview.mjs`, isolated `wrangler.preview.jsonc`, and `NECROS_MAIL_PREVIEW_D1_ID`. Previews (additional branch previews) are disabled for this staging worker; it is itself a preview-only deployment.
+- Manually triggered Cloudflare build `a98515f6-052f-499c-a6d6-66801eda7363`; Cloudflare reported **success** on 2026-11-15 with uploaded Worker, preview D1 binding and zero scheduled triggers.
+- Deployment URL reported by Wrangler: **https://necros-mail-preview.necros.workers.dev**. Build output reported Worker version `065d190d-bbea-424e-9740-50ba9f1a772f`.
+- The external web browsing tool could not retrieve the preview URL, so browser-level rendering and owner setup are NOT marked verified here; Cloudflare deployment status and resource listing were confirmed through authenticated APIs.
+- **No production DNS, email routing, MX, providers, client accounts, main branch or Nenasala resources were changed.** Do not connect real domains to the test instance. Next: review initial setup/UI on phone, test mobile design with fake data, then prepare controlled production setup after tenant isolation and gateway design are ready.

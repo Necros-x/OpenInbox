@@ -77,3 +77,11 @@ GitHub only exposes `workflow_dispatch` for workflows present on a repository's 
 
 ## Cloudflare Builds connection for phone previews (2026-11-15)
 The account has an isolated `necros-mail-preview` Worker and D1 database. The NECROS OpenInbox repository was connected to Cloudflare Builds. The preview deploy script accepts `NECROS_MAIL_PREVIEW_D1_ID` (a D1 UUID, not a secret) from a Cloudflare build variable so it can build/deploy without attempting to create resources during a build. GitHub Actions credential-based preview remains a separate supported path.
+
+## Current live staging Worker — 2026-11-15
+
+**Address:** https://necros-mail-preview.necros.workers.dev
+
+**Runtime:** isolated Cloudflare Worker `necros-mail-preview`, bound to isolated D1 `necros-mail-preview`, scheduled triggers disabled. This is the **NECROS Mail development preview**, not `mail.necros.co` and not the final platform. It is deployed from `development` using Cloudflare Builds. First-visit setup still requires provisioning an owner and Cloudflare verification; never use production account secrets or attach live email to this preview solely to test the UI.
+
+**Verification:** Cloudflare Builds build ID `a98515f6-052f-499c-a6d6-66801eda7363` returned successful deployment and the address above; authenticated Cloudflare API confirmed the Worker and its D1 resource exist. External browser rendering was not independently verified by the assistant because the URL could not be fetched in the browser tool. Existing Nenasala Worker and D1 resources were left untouched. Monitor builds under the isolated Worker; `main` is still unchanged.
