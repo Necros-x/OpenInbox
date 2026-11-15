@@ -200,3 +200,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Verified GitHub Actions run [43627564907](https://github.com/Necros-x/OpenInbox/actions/runs/43627564907) at commit `b870a44c50a248669bd520ac3b1d8b8281038337` completed successfully: CI lint, typecheck, Vitest, build, isolated preview bundle compile and Playwright E2E.
 - The preview bundle now compiles to `dist/necros_mail_preview/wrangler.json`; this packaging step uses a synthetic D1 binding ID and does not call Cloudflare APIs or deploy.
 - Real Cloudflare deployment is **not performed**. The opt-in preview workflow correctly skipped while `NECROS_MAIL_PREVIEW_ENABLED` remains unset/false. No DNS/mailboxes/provider settings changed. Await explicit owner-set repository secrets and preview variable before any development push attempts an actual preview.
+
+### 2026-11-15 — Verify newly connected Cloudflare account and preview authorization
+- Confirmed Cloudflare application connection with read access to the NECROS Cloudflare account.
+- Cloudflare preview Worker `necros-mail-preview` and D1 `necros-mail-preview` did not exist during the account inspection. Existing Nenasala Worker/database resources were untouched.
+- The previous full CI run succeeded; the separate GitHub Actions preview deployment remains opt-in, and this documentation commit triggers a permissions/enablement check on `development`.
+- Do not treat access in the ChatGPT Cloudflare connector as a GitHub Actions secret. Do not connect DNS, provider credentials or live email during preview creation.
