@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
 import { AlarmClock, Archive, CalendarClock, Check, ChevronDown, CircleCheck, Clock, Inbox, LoaderCircle, Mail, MailOpen, Menu as MenuIcon, OctagonAlert, Paperclip, RefreshCw, Search, SearchX, SquarePen, Star, Trash2, X } from 'lucide-react';
 import { listDate } from '../../lib/format';
 import { ownAddresses, participantLabel, snoozePresets, VIEW_LABELS } from '../../lib/mail';
@@ -42,6 +42,8 @@ export function ThreadList({
   onSearch,
   onMenu,
   onCompose,
+  menuButtonRef,
+  menuExpanded,
   searchRef,
 }: {
   mailbox: string;
@@ -57,6 +59,8 @@ export function ThreadList({
   onSearch: (q: string) => void;
   onMenu: () => void;
   onCompose: () => void;
+  menuButtonRef?: Ref<HTMLButtonElement>;
+  menuExpanded?: boolean;
   searchRef: React.RefObject<HTMLInputElement | null>;
 }) {
   const q = useThreads(mailbox, view, query);
@@ -132,7 +136,7 @@ export function ThreadList({
           }}
           className="flex items-center gap-2"
         >
-          <button type="button" onClick={onMenu} className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-muted md:hidden" aria-label="Menu">
+          <button ref={menuButtonRef} type="button" onClick={onMenu} aria-controls="mail-folders-drawer" aria-expanded={!!menuExpanded} aria-haspopup="dialog" className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-muted md:hidden" aria-label="Menu">
             <MenuIcon className="h-5 w-5" />
           </button>
           <div

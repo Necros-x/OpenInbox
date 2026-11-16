@@ -244,3 +244,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Cloudflare Builds run `eb8d7a23-57df-4292-b4ff-1d70390eeb8e` successfully deployed the same development commit to the isolated `necros-mail-preview` Worker + D1 environment. Preview URL: https://necros-mail-preview.necros.workers.dev
 - Fixed only E2E selectors/test structure after inspecting GitHub failures, not mail/auth/runtime behavior. No production domain routing, API providers, Nenasala resources, or main branch modified.
 - Next: actual device visual acceptance, final logo/icon and palette approval, full Phase 01 accessibility polish and any remaining user-visible upstream branding; Phase 02 mailbox work starts after current foundation acceptance. Platform tenant isolation and gateway remain separately gated.
+
+### 2026-11-16 — Mobile folders keyboard accessibility
+- **Reason:** Off-canvas mobile folder controls could be keyboard-reachable when closed. Opening lacked modal focus handling and Escape dismissal.
+- **Changed:** MailPage, MailSidebar, ThreadList, mobile E2E test, BRANDING.md and ROADMAP.md.
+- **Behavior:** focus moves into the open drawer, Tab stays inside, Escape/close/backdrop dismiss, focus returns to Menu, and closed drawer is hidden from navigation without hiding desktop.
+- **Validation:** pending CI (lint/typecheck/unit/Playwright/build) and Cloudflare preview. No changes to Worker routes, mail delivery, D1, production DNS or main.

@@ -50,11 +50,54 @@ function MailApp() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [focusIndex, setFocusIndex] = useState(0);
   const [drawer, setDrawer] = useState(false);
+  const folderDrawerRef = useRef<HTMLElement>(null);
+  const closeFolderRef = useRef<HTMLButtonElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [composers, setComposers] = useState<ComposeState[]>([]);
   const [replyRequest, setReplyRequest] = useState<{ kind: 'reply' | 'replyAll' | 'forward'; nonce: number } | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const pending = useRef(new Map<number, ReturnType<typeof setTimeout>>());
   const gPressed = useRef(false);
+
+  const closeDrawer = useCallback((restoreFocus = false) => {
+    setDrawer(false);
+    if (restoreFocus) requestAnimationFrame(() => menuButtonRef.current?.focus());
+  }, []);
+
+  // Mobile folders are modal while open. Keyboard focus stays in the drawer, and
+  // the page behind it cannot scroll until the drawer is dismissed.
+  useEffect(() => {
+    if (!drawer) return;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeFolderRef.current?.focus();
+
+    const onDrawerKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        closeDrawer(true);
+      } else if (e.key === 'Tab') {
+        const controls = Array.from(folderDrawerRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])') ?? [])
+          .filter((el) => el.getClientRects().length > 0);
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (!first || !last) return;
+        if (e.shiftKey && (document.activeElement === first || !folderDrawerRef.current?.contains(document.activeElement))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (document.activeElement === last || !folderDrawerRef.current?.contains(document.activeElement))) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    window.addEventListener('keydown', onDrawerKeyDown, true);
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener('keydown', onDrawerKeyDown, true);
+    };
+  }, [drawer, closeDrawer]);
 
   useEffect(() => {
     setSelected(new Set());
@@ -348,14 +391,19 @@ function MailApp() {
   return (
     <div className="flex h-full min-h-0">
       {/* Sidebar: drawer on mobile */}
-      <div className={cn('fixed inset-0 z-30 bg-scrim md:hidden', drawer ? 'block animate-fade-in' : 'hidden')} onClick={() => setDrawer(false)} />
+      <button type="button" aria-label="Close folders" className={cn('fixed inset-0 z-30 bg-scrim md:hidden', drawer ? 'block animate-fade-in' : 'hidden')} onClick={() => closeDrawer(true)} />
       <aside
+        id="mail-folders-drawer"
+        ref={folderDrawerRef}
+        role={drawer ? 'dialog' : undefined}
+        aria-modal={drawer || undefined}
+        aria-label="Mail folders"
         className={cn(
           'fixed inset-y-0 left-0 z-40 w-[min(304px,calc(100vw-44px))] bg-surface-2 shadow-pop transition-transform md:static md:z-auto md:w-64 md:translate-x-0 md:border-r md:border-border md:shadow-none',
-          drawer ? 'translate-x-0' : '-translate-x-full',
+          drawer ? 'visible translate-x-0' : 'invisible -translate-x-full md:visible',
         )}
       >
-        <MailSidebar mailboxes={mailboxes} current={mailboxParam} view={view} onCompose={() => { setDrawer(false); openCompose(); }} onNavigate={() => setDrawer(false)} onClose={() => setDrawer(false)} />
+        <MailSidebar mailboxes={mailboxes} current={mailboxParam} view={view} onCompose={() => { setDrawer(false); openCompose(); }} onNavigate={() => setDrawer(false)} onClose={() => closeDrawer(true)} closeButtonRef={closeFolderRef} />
       </aside>
       <section className={cn('relative min-h-0 w-full flex-col border-border md:flex md:w-[380px] md:shrink-0 md:border-r lg:w-[400px]', threadId ? 'hidden' : 'flex')}>
         <ThreadList
@@ -372,6 +420,8 @@ function MailApp() {
           onSearch={onSearch}
           onMenu={() => setDrawer(true)}
           onCompose={() => openCompose()}
+          menuButtonRef={menuButtonRef}
+          menuExpanded={drawer}
           searchRef={searchRef}
         />
       </section>

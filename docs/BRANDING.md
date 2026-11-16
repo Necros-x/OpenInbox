@@ -64,3 +64,8 @@ Create brand tokens and approved icon assets; implement consistent shell/auth sc
 
 ### Validation of 2026-11-16 UI batch
 The changes above passed GitHub Actions [run 43862186929](https://github.com/Necros-x/OpenInbox/actions/runs/43862186929), including typecheck, lint, Vitest, Vite preview build and both non-skipped Playwright scenarios. The Cloudflare `development` preview build also succeeded. User visual sign-off on the new screens is still pending; temporary logo and provisional gold palette remain in use.
+
+## Phase 01C — Keyboard-safe mobile folder drawer (2026-11-16)
+- Hidden phone-width drawer links are no longer keyboard-reachable when the drawer is closed. The desktop sidebar stays visible and interactive.
+- Opening the folder menu now announces a modal, focuses its close control, traps Tab navigation, and locks background scrolling. Escape, backdrop or Close dismisses the menu and returns focus to the trigger.
+- Screen readers receive the menu's expanded state and a named folder-navigation landmark. A phone-sized browser test verifies modal state, focus trapping, Escape and focus restoration. Final logo, palette and visual sign-off remain pending.

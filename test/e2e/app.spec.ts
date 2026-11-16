@@ -221,11 +221,24 @@ test('mobile Inbox navigation stays accessible on a phone viewport', async ({ br
     await page.goto(`${APP}/mail/all/inbox`);
     const menu = page.getByRole('button', { name: 'Menu', exact: true });
     await expect(menu).toBeVisible({ timeout: 15_000 });
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
     await menu.click({ timeout: 10_000 });
+    const drawer = page.locator('#mail-folders-drawer');
     const close = page.getByRole('button', { name: 'Close menu' });
-    await expect(close).toBeVisible({ timeout: 10_000 });
+    await expect(drawer).toHaveAttribute('role', 'dialog');
+    await expect(drawer).toHaveAttribute('aria-modal', 'true');
+    await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(drawer.getByRole('link', { name: 'Settings' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(drawer).toHaveClass(/invisible -translate-x-full/);
+    await expect(menu).toBeFocused();
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await menu.click();
     await close.click({ timeout: 10_000 });
-    await expect(page.locator('aside')).toHaveClass(/-translate-x-full/);
+    await expect(drawer).toHaveClass(/-translate-x-full/);
+    await expect(menu).toBeFocused();
     await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
   } finally {
     await ctx.close();

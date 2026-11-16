@@ -137,3 +137,8 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Isolated Cloudflare preview automatically deployed at https://necros-mail-preview.necros.workers.dev (Cloudflare build `eb8d7a23-57df-4292-b4ff-1d70390eeb8e`).
 - [ ] Owner to review newly deployed mobile and desktop screens on actual devices; final logo, icon files and palette pending.
 - [ ] Complete remaining Phase 01 accessibility/visual audits before marking foundation complete.
+
+### Phase 01C accessible mobile navigation (2026-11-16)
+- [x] Implement focus-managed, Escape-dismissible mobile folder drawer and keyboard-safe hidden state.
+- [x] Extend mobile Playwright tests for drawer accessibility; CI and preview deployment remain to be verified.
+- [ ] Complete on-device visual testing and final NECROS brand artwork before marking Phase 01 complete.
