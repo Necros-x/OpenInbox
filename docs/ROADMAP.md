@@ -160,3 +160,14 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Development preview deployed via Cloudflare Builds `49ab01e9-e731-4b4d-8f3e-9c0254512774` (latest verified `77544b2` documentation commit).
 - [ ] Review composer behavior with small on-screen keyboard, safe-area padding and modal focus with iOS VoiceOver/Android TalkBack.
 - [ ] Complete branding final icons/palette and Phase 01 mobile visual sign-off; then start Phase 02 targeted mailbox experience work.
+
+### Acceptance of Phase 01C mobile tests — 2026-11-16
+- [x] Owner reported **6/6 PASS** from a phone: Compose layout, unclipped Send toolbar, Send later → Pick date/time, narrow-screen date/time layout, admin dialog closing and light/dark readability.
+- [ ] Final official logo/colors and dedicated VoiceOver/TalkBack testing are still open; phone acceptance does not establish tenant security or production readiness.
+
+### Phase 02A — Inbox reliability and navigation (2026-11-16)
+- [x] Keep existing query-key-scoped cached folder lists and skeleton loading states; reset list scroll to top on mailbox/folder/search navigation.
+- [x] Add explicit load-failure/Retry state instead of incorrectly displaying “Inbox zero” or “Nothing here” during a network outage; distinguish failed background refresh when cached messages still exist.
+- [x] Expose the existing Refresh action on phones and show an unobtrusive desktop background-update indicator.
+- [x] Extend Playwright with failed folder fetch/retry recovery and mobile Refresh visibility; CI and Cloudflare preview verification still pending.
+- [ ] Test folder switching with data and offline/online recovery on real phones. Final logo/brand sign-off remains open.

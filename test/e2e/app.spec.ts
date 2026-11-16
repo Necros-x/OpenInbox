@@ -197,6 +197,18 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await expect(page.getByText('Results for “booked”')).toBeVisible();
   await expect(page.locator('li').filter({ hasText: 'Q4 planning agenda' })).toHaveCount(1);
   await page.goto('/mail/all/inbox');
+  // Network errors must not be shown as an empty archive, and retry must recover.
+  await page.route('**/api/threads?*', async (route) => {
+    await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { code: 'unavailable', message: 'Temporary failure' } }) });
+  });
+  await page.goto('/mail/all/archive');
+  await expect(page.getByRole('alert').getByText("Couldn't load conversations")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('Nothing here')).toHaveCount(0);
+  await page.unroute('**/api/threads?*');
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await expect(page.getByText('Nothing here')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+  await page.goto('/mail/all/inbox');
   await page.goto('/admin');
   await expect(page.getByText('Mail traffic')).toBeVisible();
 
@@ -232,6 +244,7 @@ test('mobile Inbox navigation stays accessible on a phone viewport', async ({ br
     await page.locator('#password').fill(PASSWORD);
     await page.getByRole('button', { name: 'Sign in' }).click({ timeout: 10_000 });
     await page.goto(`${APP}/mail/all/inbox`);
+    await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
     const menu = page.getByRole('button', { name: 'Menu', exact: true });
     await expect(menu).toBeVisible({ timeout: 15_000 });
     await expect(menu).toHaveAttribute('aria-expanded', 'false');

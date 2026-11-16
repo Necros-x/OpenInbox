@@ -81,3 +81,6 @@ GitHub Actions [43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/
 
 ### Validation of Phase 01C shared dialogs and composer — 2026-11-16
 After correcting a native-autofocus ordering issue in the Add User form, [GitHub Actions 43868645604](https://github.com/Necros-x/OpenInbox/actions/runs/43868645604) passed all required jobs: lint, typecheck, unit/integration, both build variants and two non-skipped browser scenarios. Cloudflare successfully deployed the isolated `development` Worker. Actual device screen-reader and keyboard behavior remain subject to manual acceptance.
+
+### Phase 01C user phone acceptance (2026-11-16)
+Owner reported six successful phone checks (Compose layout, Send toolbar, schedule date/time flow and fit, admin dialog close, light/dark readability). This closes the requested manual checks without substituting for screen-reader coverage, final logo artwork or an approved gold palette. Subsequent folder-resilience changes are Phase 02A, not a retroactive Phase 01 redesign.

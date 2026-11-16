@@ -79,6 +79,12 @@ export function ThreadList({
 
   useEffect(() => setSearch(query), [query]);
 
+  // Keep each folder/mailbox/search at the top on navigation, without discarding
+  // the independently keyed React Query caches or reloading the application.
+  useEffect(() => {
+    if (container.current) container.current.scrollTop = 0;
+  }, [mailbox, view, query]);
+
   // Infinite scroll.
   useEffect(() => {
     const el = sentinel.current;
@@ -287,7 +293,13 @@ export function ThreadList({
               Empty {view}
             </Button>
           )}
-          <IconButton label="Refresh" onClick={() => q.refetch()} icon={<RefreshCw className={cn(q.isFetching && 'animate-spin text-primary-text')} />} className="h-7 w-7 max-md:hidden" />
+          {q.isRefetching && (
+            <span role="status" className="hidden items-center gap-1 text-[11px] text-faint sm:inline-flex">
+              <LoaderCircle aria-hidden="true" className="h-3 w-3 animate-spin" />
+              Updating…
+            </span>
+          )}
+          <IconButton label="Refresh" onClick={() => q.refetch()} icon={<RefreshCw className={cn(q.isFetching && 'animate-spin text-primary-text')} />} className="h-9 w-9 sm:h-7 sm:w-7" />
         </div>
       )}
 
@@ -316,8 +328,25 @@ export function ThreadList({
               Loading…
             </div>
           </div>
+        ) : q.isError && list.length === 0 ? (
+          <div role="alert" className="flex flex-col items-center px-8 pt-20 text-center">
+            <div className="mb-4 grid h-12 w-12 place-items-center rounded-[14px] bg-danger-soft text-danger">
+              <RefreshCw aria-hidden="true" className="h-[21px] w-[21px]" />
+            </div>
+            <div className="text-[15px] font-semibold">Couldn't load conversations</div>
+            <p className="mt-1 max-w-xs text-[13px] leading-5 text-muted">
+              Check your connection and try again. Your messages haven't been deleted.
+            </p>
+            <Button variant="primary" className="mt-4" onClick={() => q.refetch()}>Try again</Button>
+          </div>
         ) : list.length === 0 ? (
-          view === 'search' ? (
+          view === 'search' && !query.trim() ? (
+            <div className="flex flex-col items-center px-9 pt-[72px] text-center">
+              <Search className="mb-4 h-7 w-7 text-faint" aria-hidden="true" />
+              <div className="text-[15px] font-semibold">Search your mail</div>
+              <p className="mt-1 text-[13px] text-muted">Enter a name, address or subject to begin.</p>
+            </div>
+          ) : view === 'search' ? (
             <div className="flex flex-col items-center px-9 pt-[72px] text-center">
               <div className="mb-4 grid h-12 w-12 place-items-center rounded-[14px] bg-surface-2 text-muted">
                 <SearchX className="h-[22px] w-[22px]" />
@@ -347,8 +376,14 @@ export function ThreadList({
             </div>
           )
         ) : (
-          <ul>
-            {list.map((t, i) => {
+          <>
+            {q.isRefetchError && (
+              <div role="status" className="border-b border-warning/25 bg-warning-soft px-4 py-2 text-[12.5px] text-muted">
+                Couldn't refresh right now. Showing the last loaded conversations.
+              </div>
+            )}
+            <ul>
+              {list.map((t, i) => {
               const unread = t.unreadCount > 0;
               const active = activeId === t.id;
               const isSelected = selected.has(t.id);
@@ -434,8 +469,9 @@ export function ThreadList({
                   </div>
                 </li>
               );
-            })}
-          </ul>
+              })}
+            </ul>
+          </>
         )}
         <div ref={sentinel} className="h-8" />
         {q.isFetchingNextPage && (
