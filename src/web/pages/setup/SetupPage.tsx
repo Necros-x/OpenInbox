@@ -7,6 +7,7 @@ import { cn, downloadBlob } from '../../lib/utils';
 import { ACCOUNT_TOKENS_URL, tokenTemplateUrl, TOKEN_PERMISSIONS } from '../../../shared/constants';
 import type { DomainSetupStep, PermissionCheck, ZoneInspection } from '../../lib/types';
 import { LogoMark } from '../../components/Logo';
+import { ThemeToggle } from '../../components/ThemeToggle';
 import { Button } from '../../components/ui/button';
 import { Checkbox, Field, Input, PasswordInput, Select } from '../../components/ui/form';
 import { Alert, Badge, Card, CopyButton } from '../../components/ui/misc';
@@ -76,7 +77,8 @@ export function SetupPage() {
   const current = stage === 'done' ? 3 : steps.findIndex((s) => s.id === stage);
 
   return (
-    <div className="min-h-full bg-bg">
+    <div className="relative min-h-full bg-bg">
+      <ThemeToggle className="absolute top-3 right-3 sm:top-6 sm:right-6" />
       <div className="mx-auto max-w-2xl px-4 py-10 sm:py-14">
         <div className="mb-8 flex flex-col items-center text-center">
           <LogoMark size={48} />

@@ -123,3 +123,10 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Isolated `development` Cloudflare Worker and D1 created; Cloudflare build successful and preview URL established (2026-11-15).
 - [ ] Verify the preview's mobile rendering and login/setup experience in a real phone browser, using test-only data.
 - [ ] Implement tenant isolation before onboarding any independent organisations or real production mail.
+
+## Phase 01B continued — 2026-11-16
+- [x] Product-branded auth shell/layout and isolated theme switch on unauthenticated setup/login flows implemented; awaiting CI and phone review.
+- [x] Inbox browser title no longer resets to OpenInbox.
+- [x] Responsive header navigation buttons enlarged and screen-reader labels added; mobile sidebar width guarded against narrow screens.
+- [ ] Review the next successful GitHub Actions run and Cloudflare automatic `development` preview deployment.
+- [ ] Confirm visual appearance on actual phone and final logo/approved palette; no full Phase 01 completion claim yet.

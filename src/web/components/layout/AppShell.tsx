@@ -60,10 +60,11 @@ export function AppShell() {
   const nav = (to: string, label: string, Icon: typeof Inbox) => (
     <NavLink
       to={to}
+      aria-label={label}
       className={({ isActive }) =>
         cn(
-          'flex h-7 items-center gap-[7px] rounded-[7px] px-2.5 text-[13px] font-medium transition-colors [&>svg]:h-[15px] [&>svg]:w-[15px]',
-          isActive ? 'bg-surface-2 text-fg [&>svg]:text-muted' : 'text-muted hover:text-fg',
+          'flex h-10 min-w-10 items-center justify-center gap-2 rounded-[10px] px-2.5 text-[13px] font-medium transition-colors sm:h-9 sm:min-w-0 sm:justify-start [&>svg]:h-[17px] [&>svg]:w-[17px]',
+          isActive ? 'bg-primary-soft text-primary-text' : 'text-muted hover:bg-surface-2 hover:text-fg',
         )
       }
     >
@@ -80,12 +81,12 @@ export function AppShell() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-bg pr-3 pl-3.5 sm:gap-5">
-        <NavLink to="/" className="flex items-center gap-[9px] md:w-[230px]">
-          <LogoMark size={22} />
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-3 sm:gap-4 sm:px-4">
+        <NavLink to="/" className="flex items-center gap-[9px] md:w-[230px]" aria-label={APP_NAME}>
+          <LogoMark size={26} />
           <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{APP_NAME}</span>
         </NavLink>
-        <nav className="flex items-center gap-0.5">
+        <nav aria-label="Primary" className="flex items-center gap-0.5">
           {nav('/mail', INBOX_NAME, Inbox)}
           {isAdmin && nav('/admin', 'NECROS Admin', LayoutGrid)}
         </nav>

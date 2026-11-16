@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams, Routes, Route } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { Inbox } from 'lucide-react';
+import { APP_NAME, INBOX_NAME } from '../../../shared/constants';
 import { api, errorText, post } from '../../lib/api';
 import { fullDate } from '../../lib/format';
 import { cn } from '../../lib/utils';
@@ -325,9 +326,9 @@ function MailApp() {
   // The browser tab shows the unread count.
   useEffect(() => {
     const unread = (mailboxes ?? []).reduce((n, m) => n + (m.unread.inbox ?? 0), 0);
-    document.title = unread ? `(${unread}) Inbox · OpenInbox` : 'OpenInbox';
+    document.title = unread ? `(${unread}) ${INBOX_NAME} · ${APP_NAME}` : `${INBOX_NAME} · ${APP_NAME}`;
     return () => {
-      document.title = 'OpenInbox';
+      document.title = APP_NAME;
     };
   }, [mailboxes]);
 
@@ -350,7 +351,7 @@ function MailApp() {
       <div className={cn('fixed inset-0 z-30 bg-scrim md:hidden', drawer ? 'block animate-fade-in' : 'hidden')} onClick={() => setDrawer(false)} />
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 w-[304px] bg-bg shadow-pop transition-transform md:static md:z-auto md:w-64 md:translate-x-0 md:border-r md:border-border md:shadow-none',
+          'fixed inset-y-0 left-0 z-40 w-[min(304px,calc(100vw-44px))] bg-surface-2 shadow-pop transition-transform md:static md:z-auto md:w-64 md:translate-x-0 md:border-r md:border-border md:shadow-none',
           drawer ? 'translate-x-0' : '-translate-x-full',
         )}
       >

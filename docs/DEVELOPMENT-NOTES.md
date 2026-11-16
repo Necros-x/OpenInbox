@@ -221,3 +221,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Deployment URL reported by Wrangler: **https://necros-mail-preview.necros.workers.dev**. Build output reported Worker version `065d190d-bbea-424e-9740-50ba9f1a772f`.
 - The external web browsing tool could not retrieve the preview URL, so browser-level rendering and owner setup are NOT marked verified here; Cloudflare deployment status and resource listing were confirmed through authenticated APIs.
 - **No production DNS, email routing, MX, providers, client accounts, main branch or Nenasala resources were changed.** Do not connect real domains to the test instance. Next: review initial setup/UI on phone, test mobile design with fake data, then prepare controlled production setup after tenant isolation and gateway design are ready.
+
+### 2026-11-16 — Phase 01B/C: auth presentation, accessible theme control and mobile navigation
+- Reason: continue the approved product rebrand after the owner reviewed the phone preview, preserving existing Cloudflare/mail/auth behavior.
+- Changed: `src/web/components/ThemeToggle.tsx` (new), `src/web/pages/auth/AuthLayout.tsx`, `src/web/pages/setup/SetupPage.tsx`, `src/web/components/layout/AppShell.tsx`, `src/web/pages/mail/MailPage.tsx`, `test/e2e/app.spec.ts`, BRANDING.md and ROADMAP.md.
+- Fixed legacy `OpenInbox` tab title in the active Inbox, polished authentication presentation, improved mobile navigation touch/accessibility and tested the unauthenticated theme switch.
+- Compatibility: no new API routes, Worker secrets, schema changes, email provider changes, tenant controls, session-cookie renames, or production DNS changes. Final branding assets remain outstanding.
+- Validation pending GitHub Actions after the commit. Do not claim a passing check before inspecting workflow result.

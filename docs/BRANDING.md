@@ -54,3 +54,10 @@ Create brand tokens and approved icon assets; implement consistent shell/auth sc
 - Kept application product naming separate from the stored instance label for now; any plan to repurpose `instanceName` must avoid migrations that overwrite user data.
 - Retained original README guidance and added a prominent NECROS fork notice with pointers to active documentation.
 - Note: final logo, full Apple-inspired UI polishing and PWA raster icons are pending approval and visual testing.
+
+## Phase 01B / C enhancement — 2026-11-16
+- Added a standalone, accessible light/dark switch on account/setup screens, retaining existing `oi.theme` system-mode persistence and avoiding authentication or session changes.
+- Refined auth visual hierarchy: brand owner and platform identity, centered setup/login card, system font stack and restrained bronze/gold styles (provisional palette; official logo not yet supplied).
+- Improved application shell tap targets, navigation accessibility and selected-state styling, and changed mobile Inbox drawer to a soft surface background with a phone-width-safe bound.
+- Updated unread-count browser title so Inbox tabs consistently identify NECROS Mail instead of the old OpenInbox name.
+- Extended Playwright setup, navigation, tab-title, mobile menu and normal-member authorization smoke checks; CI results must be recorded separately.

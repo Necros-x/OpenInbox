@@ -57,6 +57,11 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   // 1. Setup: checks, admin email, domain automation.
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Welcome to NECROS Mail' })).toBeVisible();
+  // Setup and auth pages must offer a working theme switch even before the owner signs in.
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(page.locator('html')).toHaveClass(/dark/);
+  await page.getByRole('button', { name: 'Switch to light mode' }).click();
+  await expect(page.locator('html')).not.toHaveClass(/dark/);
   await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled({ timeout: 30_000 });
   await shot(page, 'setup-checks');
   await page.getByRole('button', { name: 'Continue' }).click();
@@ -132,6 +137,8 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   expect(await deliver(mail({ from: 'x@acme.test', to: 'nobody@example.com', subject: 'x', body: 'x', id: 'x@acme.test' }), 'x@acme.test', 'nobody@example.com')).toBe(400);
 
   await page.goto('/mail/all/inbox');
+  await expect(page).toHaveTitle(/NECROS Inbox · NECROS Mail/);
+  await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
   await expect(page.getByText('Q4 planning agenda')).toBeVisible();
   await expect(page.getByText('For Bob only')).toHaveCount(0);
   await page.getByText('Q4 planning agenda').click();
@@ -180,7 +187,18 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.goto('/admin');
   await expect(page.getByText('Mail traffic')).toBeVisible();
 
-  // 7. Bob signs in: forced password change, only his inbox, no admin.
+  // 7. Mobile navigation uses accessible controls and remains operable at phone widths.
+  const mobileCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: await page.context().storageState() });
+  const mobile = await mobileCtx.newPage();
+  await mobile.goto(`${APP}/mail/all/inbox`);
+  await expect(mobile.getByRole('button', { name: 'Menu' })).toBeVisible();
+  await mobile.getByRole('button', { name: 'Menu' }).click();
+  await expect(mobile.getByRole('button', { name: 'Close menu' })).toBeVisible();
+  await mobile.getByRole('button', { name: 'Close menu' }).click();
+  await expect(mobile.locator('aside')).toHaveClass(/-translate-x-full/);
+  await mobileCtx.close();
+
+  // 8. Bob signs in: forced password change, only his inbox, no admin.
   const bobCtx = await browser.newContext();
   const bob = await bobCtx.newPage();
   await bob.goto(`${APP}/login`);
@@ -193,7 +211,7 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await bob.getByRole('button', { name: 'Save password' }).click();
   await expect(bob.getByText('For Bob only')).toBeVisible();
   await expect(bob.getByText('Q4 planning agenda')).toHaveCount(0);
-  await expect(bob.getByRole('link', { name: 'Admin' })).toHaveCount(0);
+  await expect(bob.getByRole('link', { name: 'NECROS Admin' })).toHaveCount(0);
   const adminApi = await bob.request.get(`${APP}/api/admin/overview`);
   expect(adminApi.status()).toBe(403);
   await bobCtx.close();
