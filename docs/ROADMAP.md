@@ -171,3 +171,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Expose the existing Refresh action on phones and show an unobtrusive desktop background-update indicator.
 - [x] Extend Playwright with failed folder fetch/retry recovery and mobile Refresh visibility; CI and Cloudflare preview verification still pending.
 - [ ] Test folder switching with data and offline/online recovery on real phones. Final logo/brand sign-off remains open.
+
+### Phase 02A verification (2026-11-16)
+- [x] CI [43920273842](https://github.com/Necros-x/OpenInbox/actions/runs/43920273842) passed lint, typecheck, unit/integration, both builds and Playwright 2 passed / 1 optional skipped, including simulated folder-request failure + Retry recovery and mobile Refresh visibility.
+- [x] Isolated Cloudflare preview deployed from `development` (Builds `b6f826e9-9d1f-4ae6-8539-58bdf4b2ea00`).
+- [ ] Owner to verify Refresh, folder position and responsiveness on phone. To test the offline state safely, briefly disable connectivity only in this staging preview while loading an uncached folder, then reconnect and retry; do not use production accounts.
+- [ ] Phase 02B: reading-pane and list usability improvements, scoped prefetch; preserve tenant-bound query caches and existing authorization.

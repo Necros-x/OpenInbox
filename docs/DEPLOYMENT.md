@@ -91,3 +91,6 @@ Cloudflare Builds automatically deployed NECROS Mail UI changes from `developmen
 
 ### Latest validated UI preview — 2026-11-16
 The preview Worker at https://necros-mail-preview.necros.workers.dev was deployed from `development` via Cloudflare Builds `49ab01e9-e731-4b4d-8f3e-9c0254512774`. The verified code checks ran in GitHub Actions [43868645604](https://github.com/Necros-x/OpenInbox/actions/runs/43868645604), with 2 Playwright tests passed, 1 skipped. No production DNS, email provider account or main branch modification.
+
+### Phase 02A staging verification — 2026-11-16
+The isolated `necros-mail-preview` Worker updated successfully via Cloudflare Builds `b6f826e9-9d1f-4ae6-8539-58bdf4b2ea00` from `development` commit `18e1c081`. GitHub Actions [43920273842](https://github.com/Necros-x/OpenInbox/actions/runs/43920273842) passed all required checks, including simulated network-failure recovery and mobile Refresh browser assertions. No production DNS/MX, providers, other Workers or `main` changed.
