@@ -233,3 +233,7 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - GitHub Actions run `43860941575` passed lint, TypeScript, unit/integration suite, normal build and isolated preview bundle compilation. The combined Playwright flow exceeded its 90-second test timeout after the new mobile smoke checks were appended.
 - Moved the mobile-only validation to its own named test with an independent browser context, explicit login, shorter per-step timeouts and try/finally context closure. The original comprehensive mail/send/authorization flow is returned to its original scope.
 - This is a test-harness refinement, not a production UI/mail/backend behavior change. The cause of the prior mobile click timeout is still to be confirmed from the next run.
+
+### 2026-11-16 — Fix mobile E2E locator ambiguity
+- GitHub Actions `43861661291`: original full mail-flow test passed after moving mobile checks to a separate test. Mobile test failed because the non-exact Playwright button name `Menu` also matched `Account menu` and `Close menu`.
+- Fixed only the mobile test locator by requesting an exact accessible name. No application runtime changes. CI needs rerun to confirm all browser tests.

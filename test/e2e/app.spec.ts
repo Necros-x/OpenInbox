@@ -219,7 +219,7 @@ test('mobile Inbox navigation stays accessible on a phone viewport', async ({ br
     await page.locator('#password').fill(PASSWORD);
     await page.getByRole('button', { name: 'Sign in' }).click({ timeout: 10_000 });
     await page.goto(`${APP}/mail/all/inbox`);
-    const menu = page.getByRole('button', { name: 'Menu' });
+    const menu = page.getByRole('button', { name: 'Menu', exact: true });
     await expect(menu).toBeVisible({ timeout: 15_000 });
     await menu.click({ timeout: 10_000 });
     const close = page.getByRole('button', { name: 'Close menu' });
