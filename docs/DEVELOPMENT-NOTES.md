@@ -256,3 +256,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - GitHub Actions [CI 43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/43864284959) finished **successfully**: `npm ci`, lint, TypeScript, unit/integration tests, production build, isolated preview bundle build, and Playwright browser tests (**2 passed, 1 optional screenshot test skipped**).
 - Cloudflare Builds deployment `c379e3ef-b916-48dc-9553-39c6e02ca646` finished **successfully**, tracking `development` commit `fbed186` to https://necros-mail-preview.necros.workers.dev. No production email/DNS, Nenasala Worker or main changes.
 - Follow-up: real-phone keyboard/VoiceOver/TalkBack manual review, visual palette/logo approval, wider accessibility audit of mail compose/dialogs, then Phase 02 Inbox refinements. Test success is not an independent WCAG audit or tenant-isolation verification.
+
+### 2026-11-16 — Phase 01C: shared modal/dialog and composer polish
+- **Reason:** Dialogs provided focus entry and Escape but lacked a focus loop and accessible title/description associations; short mobile viewports had composer and date/time layout constraints.
+- **Files:** shared `ui/overlay.tsx`, `mail/Composer.tsx`, `mail/PickTimeDialog.tsx`, `test/e2e/app.spec.ts`, BRANDING/ROADMAP and this commit record.
+- **Behavior:** topmost modal gets titled/description semantics, Tab wrap and background-scroll lock. Composer adjusts to dynamic viewport/safe-area and usable phone header controls. Schedule-send date/time fields become stacked and labeled on phones. Existing provider, drafts, auth, D1 and mail routes untouched.
+- **Validation:** code and regression test commit only; CI and isolated Cloudflare staging deploy require verification. No production DNS, routing or main changes.

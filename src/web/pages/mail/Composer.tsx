@@ -162,7 +162,7 @@ function fileIcon(name: string) {
   return <File className="h-3.5 w-3.5 shrink-0 text-muted" />;
 }
 
-const small = 'h-[26px] w-[26px] [&>svg]:h-3.5 [&>svg]:w-3.5';
+const small = 'h-9 w-9 sm:h-[26px] sm:w-[26px] [&>svg]:h-4 [&>svg]:w-4 sm:[&>svg]:h-3.5 sm:[&>svg]:w-3.5';
 
 export function Composer({
   initial,
@@ -512,7 +512,7 @@ export function Composer({
         open={scheduleOpen}
         onClose={() => setScheduleOpen(false)}
         title="Send later"
-        description="Sent within a minute of the chosen time, even with OpenInbox closed."
+        description="Sent within a minute of the chosen time, even with NECROS Mail closed."
         confirmLabel="Schedule send"
         onPick={(at) => send(at)}
       />
@@ -590,7 +590,7 @@ export function Composer({
 
   return frame(
     <>
-      <div className="flex h-[42px] shrink-0 items-center gap-1 border-b border-border pr-2 pl-4 text-[13px]">
+      <div className="flex h-12 shrink-0 items-center gap-1 border-b border-border pr-2 pl-4 text-[13px] sm:h-[42px]">
         <span className="min-w-0 flex-1 truncate font-semibold">{heading}</span>
         <IconButton label="Minimize" onClick={() => setMinimized(true)} icon={<Minus />} className={small} />
         <IconButton label={expanded ? 'Shrink' : 'Expand'} onClick={() => setExpanded((x) => !x)} icon={expanded ? <Minimize2 /> : <Maximize2 />} className={small} />
@@ -618,7 +618,7 @@ export function Composer({
         <EditorContent editor={editor} />
       </div>
       {attachmentList}
-      <div className="flex shrink-0 items-center gap-0.5 border-t border-border px-3 py-2.5">
+      <div className="flex shrink-0 items-center gap-0.5 border-t border-border px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))] sm:py-2.5">
         {sendButton}
         <span className="mx-2.5 font-mono text-[11px] font-medium text-faint max-sm:hidden">{isMac ? '⌘↵' : 'Ctrl ↵'}</span>
         {attachButton}
@@ -629,7 +629,7 @@ export function Composer({
     </>,
     cn(
       'pointer-events-auto border border-border-strong bg-surface shadow-pop animate-slide-up',
-      expanded ? 'fixed inset-2 z-40 rounded-xl sm:inset-10' : 'max-h-[85vh] w-screen rounded-t-xl border-b-0 sm:w-[560px]',
+      expanded ? 'fixed inset-2 z-40 rounded-xl sm:inset-10' : 'max-h-[85dvh] w-screen rounded-t-xl border-b-0 sm:w-[560px]',
     ),
   );
 }

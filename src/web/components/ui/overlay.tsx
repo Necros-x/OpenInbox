@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, CircleCheck, CircleX, Info, LoaderCircle, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -32,32 +32,60 @@ export function Dialog({
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }) {
   const panel = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
   useEffect(() => {
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const t = setTimeout(() => {
-      const focusable = panel.current?.querySelector<HTMLElement>('input, textarea, select, button[data-autofocus], [autofocus]');
+      const focusable = panel.current?.querySelector<HTMLElement>('button[data-autofocus], [autofocus], input:not([disabled]), textarea:not([disabled]), select:not([disabled])');
       (focusable ?? panel.current)?.focus();
     }, 0);
     const onKey = (e: KeyboardEvent) => {
+      // Only the topmost modal handles keyboard navigation when dialogs are nested.
+      const modals = document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+      if (modals[modals.length - 1] !== panel.current) return;
       if (e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const controls = Array.from(panel.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ) ?? []).filter((el) => el.getClientRects().length > 0);
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (!first || !last) {
+        e.preventDefault();
+        panel.current?.focus();
+      } else if (e.shiftKey && (document.activeElement === first || !panel.current?.contains(document.activeElement))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (document.activeElement === last || !panel.current?.contains(document.activeElement))) {
+        e.preventDefault();
+        first.focus();
       }
     };
     document.addEventListener('keydown', onKey, true);
     return () => {
       clearTimeout(t);
       document.removeEventListener('keydown', onKey, true);
+      document.body.style.overflow = previousOverflow;
       previous?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
   if (!open) return null;
   const width = { sm: 'max-w-[420px]', md: 'max-w-[520px]', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size];
   return createPortal(
     <div className="fixed inset-0 z-50 overflow-y-auto bg-scrim animate-fade-in">
       <div className="flex min-h-full items-center justify-center p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" className={cn('w-full overflow-hidden rounded-[14px] border border-border bg-surface shadow-pop outline-none animate-pop-in', width)}>
+        <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={description ? descriptionId : undefined} className={cn('max-h-[calc(100dvh-32px)] w-full overflow-y-auto rounded-[14px] border border-border bg-surface shadow-pop outline-none animate-pop-in', width)}>
           <div className={cn('flex items-start gap-4', icon ? 'px-[22px] pt-[22px]' : 'pt-5 pr-4 pl-[22px]')}>
             <div className="min-w-0 flex-1">
               {icon && (
@@ -65,8 +93,8 @@ export function Dialog({
                   {icon}
                 </IconTile>
               )}
-              <h2 className="text-base font-semibold text-fg">{title}</h2>
-              {description && <p className="mt-0.5 text-[13px] text-muted text-pretty">{description}</p>}
+              <h2 id={titleId} className="text-base font-semibold text-fg">{title}</h2>
+              {description && <p id={descriptionId} className="mt-0.5 text-[13px] text-muted text-pretty">{description}</p>}
             </div>
             {!icon && (
               <button type="button" onClick={onClose} className="grid h-7 w-7 place-items-center rounded-md text-faint hover:bg-surface-2 hover:text-fg" aria-label="Close">

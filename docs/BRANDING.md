@@ -72,3 +72,9 @@ The changes above passed GitHub Actions [run 43862186929](https://github.com/Nec
 
 ### Verification — 2026-11-16 mobile drawer batch
 GitHub Actions [43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/43864284959) passed lint, typecheck, unit/integration, both builds and browser tests (2 passed / 1 optional screenshot skipped). Cloudflare Builds `c379e3ef-b916-48dc-9553-39c6e02ca646` deployed the same code to the isolated preview. Device-level screen-reader review remains unverified.
+
+## Phase 01C — Shared dialogs and composer accessibility (2026-11-16)
+- Dialogs now associate visible headings and optional descriptions with their modal semantics, keep keyboard focus within the topmost modal and restore focus on dismissal. They also prevent background page scrolling and remain vertically scrollable on short mobile screens.
+- Floating composer now uses dynamic viewport height, respects mobile safe-area spacing around the Send toolbar, and enlarges header controls on touch screens. The schedule-send dialog stacks date/time fields vertically on narrow phones, with proper accessible labels.
+- Updated the stale OpenInbox wording in the schedule-send helper text. Changes do not affect backend mail delivery or scheduling semantics.
+- Playwright extends the existing admin add-user flow to verify a named dialog, its description, Tab wrap and Escape focus restoration. Validation is not complete until CI and staging deployment pass.

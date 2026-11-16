@@ -148,3 +148,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Cloudflare staging preview automatically deployed (Builds `c379e3ef-b916-48dc-9553-39c6e02ca646`).
 - [ ] Manual Android TalkBack / iOS VoiceOver check and actual device sizing/contrast review.
 - [ ] Continue navigation/composer accessibility audit and Phase 02 mailbox polish; do not onboard real multi-tenant clients yet.
+
+### Phase 01C dialog / compose accessibility batch — 2026-11-16
+- [x] Implement named shared dialogs, modal focus loop, Escape/focus restoration and background scroll lock.
+- [x] Refine phone-sized composer, safe-area padding and date/time scheduling form layout and labels.
+- [x] Extend end-to-end dialog keyboard regression coverage; CI and preview deployment still require verification.
+- [ ] Review real-phone compose/scheduling UI and finish final branding; tenant security work remains a separate prerequisite before clients.
