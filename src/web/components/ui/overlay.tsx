@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, CircleCheck, CircleX, Info, LoaderCircle, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -36,8 +36,9 @@ export function Dialog({
   const descriptionId = useId();
   const onCloseRef = useRef(onClose);
   useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
+    // Restore opener focus before React detaches the dialog's focused node.
     const previous = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
