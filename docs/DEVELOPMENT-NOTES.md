@@ -267,3 +267,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - GitHub CI run `43867528548` passed lint, typecheck, Vitest and both builds, but Playwright reported **1 failed, 1 passed, 1 skipped**: Escape closed the Add a user dialog without reliably returning focus to its original trigger.
 - Focus return in `Dialog` previously happened in a passive `useEffect` cleanup, after the focused portal content could already be detached. Changed the modal lifecycle to `useLayoutEffect` for cleanup before React removes portal nodes in commit `a4637ad24fc761b0e174683d5a374cda019632c2`.
 - Scope: shared component behavior only; no email, database, provider or infrastructure logic. CI rerun and the actual browser assertion remain **pending** at this documentation commit.
+
+### 2026-11-16 — Fix dialog opener lost to native input autofocus
+- GitHub Actions runs `43867528548` and `43868080945` reproduced failed return-focus assertion after Escape. The Add User dialog's `autoFocus` input receives focus before modal mount lifecycle effects run, so capturing `document.activeElement` inside the shared dialog did not identify the button that opened it.
+- Commit `a5b11d9b8f8340d8227e81797ef77eb670e62425` removes this native `autoFocus` from the Add User form. The shared Dialog already programmatically focuses its first enabled field after recording the opener; it therefore retains the intended initial field focus and can restore the opener.
+- This is a focused frontend accessibility correction. No mail/D1/Cloudflare resource changes. Recheck the full CI and Playwright suite before marking resolved.
