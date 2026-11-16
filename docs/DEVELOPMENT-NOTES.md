@@ -262,3 +262,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Files:** shared `ui/overlay.tsx`, `mail/Composer.tsx`, `mail/PickTimeDialog.tsx`, `test/e2e/app.spec.ts`, BRANDING/ROADMAP and this commit record.
 - **Behavior:** topmost modal gets titled/description semantics, Tab wrap and background-scroll lock. Composer adjusts to dynamic viewport/safe-area and usable phone header controls. Schedule-send date/time fields become stacked and labeled on phones. Existing provider, drafts, auth, D1 and mail routes untouched.
 - **Validation:** code and regression test commit only; CI and isolated Cloudflare staging deploy require verification. No production DNS, routing or main changes.
+
+### 2026-11-16 — Follow-up: correct dialog focus restoration timing
+- GitHub CI run `43867528548` passed lint, typecheck, Vitest and both builds, but Playwright reported **1 failed, 1 passed, 1 skipped**: Escape closed the Add a user dialog without reliably returning focus to its original trigger.
+- Focus return in `Dialog` previously happened in a passive `useEffect` cleanup, after the focused portal content could already be detached. Changed the modal lifecycle to `useLayoutEffect` for cleanup before React removes portal nodes in commit `a4637ad24fc761b0e174683d5a374cda019632c2`.
+- Scope: shared component behavior only; no email, database, provider or infrastructure logic. CI rerun and the actual browser assertion remain **pending** at this documentation commit.
