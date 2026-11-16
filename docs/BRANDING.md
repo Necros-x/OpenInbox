@@ -78,3 +78,6 @@ GitHub Actions [43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/
 - Floating composer now uses dynamic viewport height, respects mobile safe-area spacing around the Send toolbar, and enlarges header controls on touch screens. The schedule-send dialog stacks date/time fields vertically on narrow phones, with proper accessible labels.
 - Updated the stale OpenInbox wording in the schedule-send helper text. Changes do not affect backend mail delivery or scheduling semantics.
 - Playwright extends the existing admin add-user flow to verify a named dialog, its description, Tab wrap and Escape focus restoration. Validation is not complete until CI and staging deployment pass.
+
+### Validation of Phase 01C shared dialogs and composer — 2026-11-16
+After correcting a native-autofocus ordering issue in the Add User form, [GitHub Actions 43868645604](https://github.com/Necros-x/OpenInbox/actions/runs/43868645604) passed all required jobs: lint, typecheck, unit/integration, both build variants and two non-skipped browser scenarios. Cloudflare successfully deployed the isolated `development` Worker. Actual device screen-reader and keyboard behavior remain subject to manual acceptance.

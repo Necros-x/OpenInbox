@@ -88,3 +88,6 @@ The account has an isolated `necros-mail-preview` Worker and D1 database. The NE
 
 ### Verified 2026-11-16 preview update
 Cloudflare Builds automatically deployed NECROS Mail UI changes from `development` code commit `00c75c4`, confirmed as successful build `eb8d7a23-57df-4292-b4ff-1d70390eeb8e`. The URL remains https://necros-mail-preview.necros.workers.dev. GitHub Actions `43862186929` passed all required checks, including two Playwright tests (one optional screenshot test skipped). The Worker is still staging-only with an isolated D1 database; no real mail routes or domain cutover authorized.
+
+### Latest validated UI preview — 2026-11-16
+The preview Worker at https://necros-mail-preview.necros.workers.dev was deployed from `development` via Cloudflare Builds `49ab01e9-e731-4b4d-8f3e-9c0254512774`. The verified code checks ran in GitHub Actions [43868645604](https://github.com/Necros-x/OpenInbox/actions/runs/43868645604), with 2 Playwright tests passed, 1 skipped. No production DNS, email provider account or main branch modification.

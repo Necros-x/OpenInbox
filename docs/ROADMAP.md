@@ -154,3 +154,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Refine phone-sized composer, safe-area padding and date/time scheduling form layout and labels.
 - [x] Extend end-to-end dialog keyboard regression coverage; CI and preview deployment still require verification.
 - [ ] Review real-phone compose/scheduling UI and finish final branding; tenant security work remains a separate prerequisite before clients.
+
+### Verified Phase 01C dialogs and composer — 2026-11-16
+- [x] GitHub CI passed at code `a5b11d9` ([43868645604](https://github.com/Necros-x/OpenInbox/actions/runs/43868645604)): lint, typecheck, Vitest, production/preview builds, Playwright **2 passed, 1 skipped**.
+- [x] Development preview deployed via Cloudflare Builds `49ab01e9-e731-4b4d-8f3e-9c0254512774` (latest verified `77544b2` documentation commit).
+- [ ] Review composer behavior with small on-screen keyboard, safe-area padding and modal focus with iOS VoiceOver/Android TalkBack.
+- [ ] Complete branding final icons/palette and Phase 01 mobile visual sign-off; then start Phase 02 targeted mailbox experience work.
