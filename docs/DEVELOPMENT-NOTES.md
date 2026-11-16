@@ -250,3 +250,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Changed:** MailPage, MailSidebar, ThreadList, mobile E2E test, BRANDING.md and ROADMAP.md.
 - **Behavior:** focus moves into the open drawer, Tab stays inside, Escape/close/backdrop dismiss, focus returns to Menu, and closed drawer is hidden from navigation without hiding desktop.
 - **Validation:** pending CI (lint/typecheck/unit/Playwright/build) and Cloudflare preview. No changes to Worker routes, mail delivery, D1, production DNS or main.
+
+### 2026-11-16 — Mobile drawer accessibility: CI and preview verification
+- Source commit: `fbed18639ffc7b71af551d00e448599a149b530b` (focused accessibility change with implementation and documentation in one commit).
+- GitHub Actions [CI 43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/43864284959) finished **successfully**: `npm ci`, lint, TypeScript, unit/integration tests, production build, isolated preview bundle build, and Playwright browser tests (**2 passed, 1 optional screenshot test skipped**).
+- Cloudflare Builds deployment `c379e3ef-b916-48dc-9553-39c6e02ca646` finished **successfully**, tracking `development` commit `fbed186` to https://necros-mail-preview.necros.workers.dev. No production email/DNS, Nenasala Worker or main changes.
+- Follow-up: real-phone keyboard/VoiceOver/TalkBack manual review, visual palette/logo approval, wider accessibility audit of mail compose/dialogs, then Phase 02 Inbox refinements. Test success is not an independent WCAG audit or tenant-isolation verification.

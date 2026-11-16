@@ -69,3 +69,6 @@ The changes above passed GitHub Actions [run 43862186929](https://github.com/Nec
 - Hidden phone-width drawer links are no longer keyboard-reachable when the drawer is closed. The desktop sidebar stays visible and interactive.
 - Opening the folder menu now announces a modal, focuses its close control, traps Tab navigation, and locks background scrolling. Escape, backdrop or Close dismisses the menu and returns focus to the trigger.
 - Screen readers receive the menu's expanded state and a named folder-navigation landmark. A phone-sized browser test verifies modal state, focus trapping, Escape and focus restoration. Final logo, palette and visual sign-off remain pending.
+
+### Verification — 2026-11-16 mobile drawer batch
+GitHub Actions [43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/43864284959) passed lint, typecheck, unit/integration, both builds and browser tests (2 passed / 1 optional screenshot skipped). Cloudflare Builds `c379e3ef-b916-48dc-9553-39c6e02ca646` deployed the same code to the isolated preview. Device-level screen-reader review remains unverified.

@@ -142,3 +142,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Implement focus-managed, Escape-dismissible mobile folder drawer and keyboard-safe hidden state.
 - [x] Extend mobile Playwright tests for drawer accessibility; CI and preview deployment remain to be verified.
 - [ ] Complete on-device visual testing and final NECROS brand artwork before marking Phase 01 complete.
+
+### Mobile drawer accessibility validation — 2026-11-16
+- [x] CI verified at `fbed186` via [43864284959](https://github.com/Necros-x/OpenInbox/actions/runs/43864284959): lint, typecheck, unit/integration, two builds, browser scenarios 2 passed / 1 optional skipped.
+- [x] Cloudflare staging preview automatically deployed (Builds `c379e3ef-b916-48dc-9553-39c6e02ca646`).
+- [ ] Manual Android TalkBack / iOS VoiceOver check and actual device sizing/contrast review.
+- [ ] Continue navigation/composer accessibility audit and Phase 02 mailbox polish; do not onboard real multi-tenant clients yet.
