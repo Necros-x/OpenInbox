@@ -187,18 +187,7 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.goto('/admin');
   await expect(page.getByText('Mail traffic')).toBeVisible();
 
-  // 7. Mobile navigation uses accessible controls and remains operable at phone widths.
-  const mobileCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: await page.context().storageState() });
-  const mobile = await mobileCtx.newPage();
-  await mobile.goto(`${APP}/mail/all/inbox`);
-  await expect(mobile.getByRole('button', { name: 'Menu' })).toBeVisible();
-  await mobile.getByRole('button', { name: 'Menu' }).click();
-  await expect(mobile.getByRole('button', { name: 'Close menu' })).toBeVisible();
-  await mobile.getByRole('button', { name: 'Close menu' }).click();
-  await expect(mobile.locator('aside')).toHaveClass(/-translate-x-full/);
-  await mobileCtx.close();
-
-  // 8. Bob signs in: forced password change, only his inbox, no admin.
+  // 7. Bob signs in: forced password change, only his inbox, no admin.
   const bobCtx = await browser.newContext();
   const bob = await bobCtx.newPage();
   await bob.goto(`${APP}/login`);
@@ -215,4 +204,30 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   const adminApi = await bob.request.get(`${APP}/api/admin/overview`);
   expect(adminApi.status()).toBe(403);
   await bobCtx.close();
+});
+
+
+test('mobile Inbox navigation stays accessible on a phone viewport', async ({ browser }) => {
+  // Keep this separate from the full mail-flow test so a mobile regression has its own timeout
+  // and Playwright trace. The preceding test initializes the mock installation.
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  try {
+    const page = await ctx.newPage();
+    await page.goto(`${APP}/login`);
+    await expect(page.getByRole('heading', { name: 'Sign in to NECROS Inbox' })).toBeVisible();
+    await page.locator('#email').fill('admin@example.com');
+    await page.locator('#password').fill(PASSWORD);
+    await page.getByRole('button', { name: 'Sign in' }).click({ timeout: 10_000 });
+    await page.goto(`${APP}/mail/all/inbox`);
+    const menu = page.getByRole('button', { name: 'Menu' });
+    await expect(menu).toBeVisible({ timeout: 15_000 });
+    await menu.click({ timeout: 10_000 });
+    const close = page.getByRole('button', { name: 'Close menu' });
+    await expect(close).toBeVisible({ timeout: 10_000 });
+    await close.click({ timeout: 10_000 });
+    await expect(page.locator('aside')).toHaveClass(/-translate-x-full/);
+    await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
+  } finally {
+    await ctx.close();
+  }
 });

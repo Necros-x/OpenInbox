@@ -228,3 +228,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Fixed legacy `OpenInbox` tab title in the active Inbox, polished authentication presentation, improved mobile navigation touch/accessibility and tested the unauthenticated theme switch.
 - Compatibility: no new API routes, Worker secrets, schema changes, email provider changes, tenant controls, session-cookie renames, or production DNS changes. Final branding assets remain outstanding.
 - Validation pending GitHub Actions after the commit. Do not claim a passing check before inspecting workflow result.
+
+### 2026-11-16 — Isolate mobile navigation browser check after CI timeout
+- GitHub Actions run `43860941575` passed lint, TypeScript, unit/integration suite, normal build and isolated preview bundle compilation. The combined Playwright flow exceeded its 90-second test timeout after the new mobile smoke checks were appended.
+- Moved the mobile-only validation to its own named test with an independent browser context, explicit login, shorter per-step timeouts and try/finally context closure. The original comprehensive mail/send/authorization flow is returned to its original scope.
+- This is a test-harness refinement, not a production UI/mail/backend behavior change. The cause of the prior mobile click timeout is still to be confirmed from the next run.
