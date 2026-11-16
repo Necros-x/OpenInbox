@@ -61,3 +61,6 @@ Create brand tokens and approved icon assets; implement consistent shell/auth sc
 - Improved application shell tap targets, navigation accessibility and selected-state styling, and changed mobile Inbox drawer to a soft surface background with a phone-width-safe bound.
 - Updated unread-count browser title so Inbox tabs consistently identify NECROS Mail instead of the old OpenInbox name.
 - Extended Playwright setup, navigation, tab-title, mobile menu and normal-member authorization smoke checks; CI results must be recorded separately.
+
+### Validation of 2026-11-16 UI batch
+The changes above passed GitHub Actions [run 43862186929](https://github.com/Necros-x/OpenInbox/actions/runs/43862186929), including typecheck, lint, Vitest, Vite preview build and both non-skipped Playwright scenarios. The Cloudflare `development` preview build also succeeded. User visual sign-off on the new screens is still pending; temporary logo and provisional gold palette remain in use.

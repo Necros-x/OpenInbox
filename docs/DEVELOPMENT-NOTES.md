@@ -237,3 +237,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 ### 2026-11-16 — Fix mobile E2E locator ambiguity
 - GitHub Actions `43861661291`: original full mail-flow test passed after moving mobile checks to a separate test. Mobile test failed because the non-exact Playwright button name `Menu` also matched `Account menu` and `Close menu`.
 - Fixed only the mobile test locator by requesting an exact accessible name. No application runtime changes. CI needs rerun to confirm all browser tests.
+
+### 2026-11-16 — Phase 01B/C verified and deployed to preview
+- Last code commit in this batch: `00c75c49cccb68456826a0502ac0ae5eeb00f4e6`. CI run [43862186929](https://github.com/Necros-x/OpenInbox/actions/runs/43862186929) completed **successfully**: dependency install, lint, typecheck, unit/integration, production build, isolated preview bundle and Playwright browser tests.
+- Browser result: **2 passed, 1 skipped** (optional screenshot coverage). Existing full setup/mail/send/search/member-access flow passed, and the newly isolated mobile Inbox navigation flow passed. Separate browser assertions also check unauthenticated light/dark switch and NECROS Mail tab title.
+- Cloudflare Builds run `eb8d7a23-57df-4292-b4ff-1d70390eeb8e` successfully deployed the same development commit to the isolated `necros-mail-preview` Worker + D1 environment. Preview URL: https://necros-mail-preview.necros.workers.dev
+- Fixed only E2E selectors/test structure after inspecting GitHub failures, not mail/auth/runtime behavior. No production domain routing, API providers, Nenasala resources, or main branch modified.
+- Next: actual device visual acceptance, final logo/icon and palette approval, full Phase 01 accessibility polish and any remaining user-visible upstream branding; Phase 02 mailbox work starts after current foundation acceptance. Platform tenant isolation and gateway remain separately gated.

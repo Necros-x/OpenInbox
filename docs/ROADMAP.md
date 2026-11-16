@@ -130,3 +130,10 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Responsive header navigation buttons enlarged and screen-reader labels added; mobile sidebar width guarded against narrow screens.
 - [ ] Review the next successful GitHub Actions run and Cloudflare automatic `development` preview deployment.
 - [ ] Confirm visual appearance on actual phone and final logo/approved palette; no full Phase 01 completion claim yet.
+
+### Verified Phase 01B/C milestone — 2026-11-16
+- [x] New unauthenticated light/dark control, refined auth layout, improved accessible navigation, mobile-safe sidebar and NECROS tab title committed.
+- [x] CI green at `00c75c4` (run `43862186929`): lint, typecheck, unit/integration, both builds, Playwright **2 passed / 1 skipped**.
+- [x] Isolated Cloudflare preview automatically deployed at https://necros-mail-preview.necros.workers.dev (Cloudflare build `eb8d7a23-57df-4292-b4ff-1d70390eeb8e`).
+- [ ] Owner to review newly deployed mobile and desktop screens on actual devices; final logo, icon files and palette pending.
+- [ ] Complete remaining Phase 01 accessibility/visual audits before marking foundation complete.
