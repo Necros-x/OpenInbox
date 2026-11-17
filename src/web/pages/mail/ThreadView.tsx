@@ -112,6 +112,16 @@ export function ThreadView({
   const mailbox = mailboxes.find((m) => m.id === data?.thread.mailboxId);
   const user = useUser();
 
+  const retryConversation = async () => {
+    const id = toast.retrying('Reopening conversation…');
+    try {
+      const result = await refetch();
+      toast.update(id, result.isError ? 'error' : 'success', result.isError ? "Couldn't load conversation." : 'Conversation ready');
+    } catch {
+      toast.update(id, 'error', "Couldn't load conversation. Try again.");
+    }
+  };
+
   // Open the latest and unread messages; mark the thread read once shown.
   useEffect(() => {
     if (!data) return;
@@ -195,7 +205,7 @@ export function ThreadView({
           <div className="text-base font-semibold">Couldn't load conversation</div>
           <p className="mt-2 max-w-sm text-[13px] leading-5 text-muted">{error ? errorText(error) : 'Conversation not found.'}</p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <Button variant="primary" onClick={() => void refetch()}>Try again</Button>
+            <Button variant="primary" onClick={() => void retryConversation()}>Try again</Button>
             <Button variant="secondary" onClick={onBack}>Back to messages</Button>
           </div>
         </div>
@@ -356,7 +366,7 @@ export function ThreadView({
         {isRefetchError && (
           <div role="status" className="flex flex-wrap items-center justify-between gap-2 border-b border-warning/25 bg-warning-soft px-4 py-2 text-[12.5px] text-muted">
             <span>Couldn't refresh. Showing the last loaded conversation.</span>
-            <Button size="xs" variant="ghost" onClick={() => void refetch()}>Retry</Button>
+            <Button size="xs" variant="ghost" onClick={() => void retryConversation()}>Retry</Button>
           </div>
         )}
         {isRefetching && !isRefetchError && (

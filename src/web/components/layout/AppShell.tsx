@@ -10,7 +10,7 @@ import { cn } from '../../lib/utils';
 import { CommandPalette, KeyCombo, SHORTCUTS } from '../../pages/mail/CommandPalette';
 import { LogoMark } from '../Logo';
 import { APP_NAME, INBOX_NAME } from '../../../shared/constants';
-import { Dialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../ui/overlay';
+import { Dialog, Menu, MenuItem, MenuLabel, MenuSeparator, NotificationBell, useToast } from '../ui/overlay';
 import { Avatar, Kbd } from '../ui/misc';
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
@@ -50,6 +50,8 @@ export function AppShell() {
       toast.error(errorText(e));
       return;
     }
+    // Clear memory-only notification history before switching to another account.
+    toast.clear();
     // Mark the session signed out in place and drop everything else. (Clearing the whole cache
     // orphaned the session query, so the app kept the old user and never reached the login page.)
     navigate('/login', { replace: true });
@@ -100,6 +102,7 @@ export function AppShell() {
           <span className="flex-1 text-left">Jump to…</span>
           <Kbd>{isMac ? '⌘K' : 'Ctrl K'}</Kbd>
         </button>
+        <NotificationBell />
         <Menu
           className="w-[264px]"
           trigger={({ onClick, open }) => (

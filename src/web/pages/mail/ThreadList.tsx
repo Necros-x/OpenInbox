@@ -127,6 +127,15 @@ export function ThreadList({
     else n.add(id);
     setSelected(n);
   };
+  const refreshWithFeedback = async (retry = false) => {
+    const id = retry ? toast.retrying('Retrying mailbox refresh…') : toast.loading('Refreshing conversations…');
+    try {
+      const result = await q.refetch();
+      toast.update(id, result.isError ? 'error' : 'success', result.isError ? "Couldn't refresh conversations." : 'Conversations up to date');
+    } catch {
+      toast.update(id, 'error', "Couldn't refresh conversations. Try again.");
+    }
+  };
   const allSelected = list.length > 0 && list.every((t) => selected.has(t.id));
   const title = view.startsWith('label-') ? (labelsById.get(Number(view.slice(6)))?.name ?? 'Label') : (VIEW_LABELS[view] ?? view);
   const mailboxName = mailbox === 'all' ? (mailboxes.length > 1 ? 'All inboxes' : '') : (mailboxes.find((m) => String(m.id) === mailbox)?.address ?? '');
@@ -299,7 +308,7 @@ export function ThreadList({
               Updating…
             </span>
           )}
-          <IconButton label="Refresh" onClick={() => q.refetch()} icon={<RefreshCw className={cn(q.isFetching && 'animate-spin text-primary-text')} />} className="h-9 w-9 sm:h-7 sm:w-7" />
+          <IconButton label="Refresh" onClick={() => void refreshWithFeedback()} icon={<RefreshCw className={cn(q.isFetching && 'animate-spin text-primary-text')} />} className="h-9 w-9 sm:h-7 sm:w-7" />
         </div>
       )}
 
@@ -337,7 +346,7 @@ export function ThreadList({
             <p className="mt-1 max-w-xs text-[13px] leading-5 text-muted">
               Check your connection and try again. Your messages haven't been deleted.
             </p>
-            <Button variant="primary" className="mt-4" onClick={() => q.refetch()}>Try again</Button>
+            <Button variant="primary" className="mt-4" onClick={() => void refreshWithFeedback(true)}>Try again</Button>
           </div>
         ) : list.length === 0 ? (
           view === 'search' && !query.trim() ? (

@@ -82,6 +82,12 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.getByRole('button', { name: 'Open the dashboard' }).click();
   await expect(page.getByText('Mail traffic')).toBeVisible();
   await expect(page.getByText('Welcome aboard!')).toBeVisible();
+  // A compact, accessible in-app notification center is available on all authenticated pages.
+  const notifications = page.getByRole('button', { name: 'Notifications' });
+  await expect(notifications).toBeVisible();
+  await notifications.click();
+  await expect(page.getByRole('region', { name: 'Recent notifications' })).toBeVisible();
+  await notifications.click();
 
   // 2. Connect Resend: domain registered, DNS written, verified.
   await page.goto('/admin/integrations');
@@ -221,6 +227,18 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByText('Nothing here')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+  // The actual request is held open, showing the official Thinking Orb while refreshing.
+  await page.route('**/api/threads?*', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    await route.continue();
+  });
+  await page.getByRole('button', { name: 'Refresh' }).click();
+  await expect(page.locator('[data-thinking-orb]')).toBeVisible();
+  await expect(page.getByText('Conversations up to date')).toBeVisible({ timeout: 20_000 });
+  await page.unroute('**/api/threads?*');
+  await notifications.click();
+  await expect(page.getByRole('region', { name: 'Recent notifications' })).toContainText('Conversations up to date');
+  await notifications.click();
   await page.goto('/mail/all/inbox');
   await page.goto('/admin');
   await expect(page.getByText('Mail traffic')).toBeVisible();

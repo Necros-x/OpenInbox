@@ -200,3 +200,10 @@ Every implementation commit updates the appropriate focused documentation plus d
 ### Phase 02C — Thinking Orbs notifications (2026-11-17)
 - [x] Inspected Thinking Orbs official source, verified MIT license, added local upstream React orb/core and LICENSE with no external runtime dependency.
 - [ ] Integrate accessible stateful toast system and compact in-app notification history, preserve Undo semantics, run CI and phone tests.
+
+### Phase 02C — Thinking Orbs notifications (2026-11-17)
+- [x] Integrate vendored Thinking Orbs `working/retrying/waiting` animations into the existing toast provider, preserving Undo semantics.
+- [x] Add ephemeral authenticated header notifications with unread count, recent updates and clear action; clear history on logout.
+- [x] Show actual query-status toast for manual Refresh and retry in Inbox and conversation reader.
+- [x] Extend E2E for notification popover and Thinking Orb in a held-open refresh, plus successful completed event.
+- [ ] Verify CI/Cloudflare, check visual placement and accessibility on phone, then expand to other true asynchronous workflows.

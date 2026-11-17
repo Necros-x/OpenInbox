@@ -329,3 +329,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Added `toast.update(id, tone, message)` for actual operation completion, with clean timeout management and descriptive screen-reader live regions. Added memory-only 20-item recent activity store (finished success/error/info), bounded transient stack, and mobile-top/desktop-bottom positioning to avoid covering the mobile Send toolbar.
 - Added `NotificationBell` compact history popover for app header. This commit only introduces the component and API; wiring it to the shell and actual actions is a separate commit. History is not stored in browser storage and `toast.clear()` will support account switch safety.
 - Validation: typecheck/CI to confirm; no provider or API changes. The upstream MIT license remains adjacent to its source.
+
+### 2026-11-17 — Wire notification center and genuine async toast states
+- Added `NotificationBell` popover to `AppShell` for memory-only history of the last 20 completed success/error/info updates with unread indication, clear action and keyboard dismissal.
+- Added `toast.clear()` during successful sign-out to avoid leaking previous-account activity after login changes. Activity is never persisted or written to the mail API.
+- Manual folder Refresh and folder/reader retry now create actual Think Orbs `working` / `retrying` pending toasts and update the **same** toast to success/error after the query resolves. The pre-existing mail Undo countdown and send completion behavior remain intact.
+- Extended Playwright with a header notification smoke test and a held-open real refresh request that verifies the orb and then recent-history success.
+- Validation: GitHub CI and Cloudflare staging deployment must be confirmed; main, real client mail, domain routing and providers untouched.

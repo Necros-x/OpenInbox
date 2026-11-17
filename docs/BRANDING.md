@@ -101,3 +101,6 @@ Both light/dark themes use these base swatches with neutral near-white/grey mixt
 
 ### Palette implementation validation — 2026-11-17
 The final slate theme code at `09a26bd` passed [CI 44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377); its browser test asserts `#212529` for dark background, `#adb5bd` for dark primary, and `#343a40` for light primary. Cloudflare Builds `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e` reported successful staging deployment. Real-device visual acceptance of this new palette is pending.
+
+### Thinking Orbs and in-app notification UI — 2026-11-17
+The official MIT Thinking Orbs React source is vendored under `src/web/components/ui/thinking-orbs`, tinted through the Carbon Black/Gunmetal/Slate CSS currentColor. `working` indicates a genuine pending query, `retrying` denotes a retry call and `waiting` visually accompanies the Undo countdown without claiming AI processing. Completed success/error/info events use differentiated icons and can be revisited in the memory-only notification bell. No browser persistence of notification details.
