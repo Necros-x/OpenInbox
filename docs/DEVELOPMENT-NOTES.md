@@ -317,3 +317,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Verified CI:** [GitHub Actions 44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377) passed lint, typecheck, unit/integration tests, normal production build, isolated preview bundle build and Playwright: **2 passed, 1 skipped** (optional screenshot test). Test includes simulated read failure/Retry and exact light/dark palette variables.
 - **Cloudflare:** Build `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e` deployed code `09a26bdf1eb25ffeb6855aec4e9d68017f5c76a8` successfully to the isolated `necros-mail-preview` Worker and preview D1. No production DNS/MX, Nenasala resource, provider or `main` changes.
 - **Manual review pending:** owner should confirm light/dark slate colors, keyboard/read states and mobile Back control on the actual phone. Final logo remains temporary; platform tenant isolation/security prerequisites remain unchanged.
+
+### 2026-11-17 — Vendor exact Thinking Orbs React source (foundation)
+- Reviewed https://www.thinkingorbs.com and upstream `yogesharc/thinking-orbs` (MIT, version 0.1.2 in package metadata) and selected the **matching library shown by the user**, not the unrelated `thinking-orbs` npm package.
+- Added upstream `orb-core.ts` and React `orb.tsx` to `src/web/components/ui/thinking-orbs/`, preserving the upstream MIT LICENSE and copyright notice. Vendoring avoids introducing a new dependency or hand-editing the npm lockfile and supports offline, self-contained Cloudflare builds.
+- No UI behavior is changed in this source-only commit. Next commit will integrate the actual orb with existing NECROS ToastProvider and short in-app notifications; validation required after integration.

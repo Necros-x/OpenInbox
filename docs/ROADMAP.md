@@ -196,3 +196,7 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Isolated Cloudflare preview deployment successful (Builds `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e`).
 - [ ] Owner to sign off phone visual slate theme and opening/closing/loading conversations. Final logo and full screen-reader audit remain pending.
 - [ ] Phase 02C candidate: bounded same-mailbox read prefetch and reading-pane interaction polish, only after verifying server-side access guards; do not cross-tenant prepopulate mail.
+
+### Phase 02C — Thinking Orbs notifications (2026-11-17)
+- [x] Inspected Thinking Orbs official source, verified MIT license, added local upstream React orb/core and LICENSE with no external runtime dependency.
+- [ ] Integrate accessible stateful toast system and compact in-app notification history, preserve Undo semantics, run CI and phone tests.
