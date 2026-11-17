@@ -221,3 +221,8 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Owner requested bottom placement and content-fit for every toast; applied to shared toast layer and retained mobile safe-area constraint.
 - [x] Extended phone Playwright to assert bottom anchored, non-full-width, in-viewport toast geometry.
 - [ ] Confirm mobile visual placement with real devices and open Compose toolbar; CI and isolated preview verification pending.
+
+### Compact bottom toasts verified — 2026-11-17
+- [x] CI [44045418853](https://github.com/Necros-x/OpenInbox/actions/runs/44045418853): lint, typecheck, unit tests, both builds, Playwright 2 passed / 1 skipped including mobile toast width and placement.
+- [x] Cloudflare development preview deployed commit `a16d10c` (Builds `7ead686f-8ccc-4df9-9aea-db8b3e00b6a6`).
+- [ ] Real-phone review when Compose and Undo Send are active; adjust vertical clearance if necessary without restoring full-width toast sizing.

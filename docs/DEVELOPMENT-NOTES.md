@@ -368,3 +368,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Changed:** `src/web/components/ui/overlay.tsx` toast wrapper now bottom-center with safe-area inset, intrinsic `w-max` maximum viewport width and centered children; each ToastItem has `w-fit max-w-full` and wrapping message. This applies across all toast types and preserves the existing Undo countdown, action buttons, Thinking Orbs animations, alert/status semantics and notification bell history.
 - **Regression:** `test/e2e/app.spec.ts` phone viewport test triggers an actual Refresh toast and validates non-full-width geometry, bottom placement and viewport bounds.
 - **Unchanged:** mail provider/API/data/worker routes, D1 and production DNS. Main branch untouched. CI and preview deploy pending at commit creation.
+
+### 2026-11-17 — Compact bottom toasts: CI and Cloudflare verified
+- Code commit `a16d10c46d323b7b0fc8b1df4ab1a4d9bcbbd60a` passed GitHub Actions [44045418853](https://github.com/Necros-x/OpenInbox/actions/runs/44045418853): lint, TypeScript, unit/integration tests, production and preview builds. Playwright **2 passed / 1 skipped**, including the phone-viewport assertions for bottom placement, content-fit width and no horizontal clipping.
+- Cloudflare Builds `7ead686f-8ccc-4df9-9aea-db8b3e00b6a6` successfully deployed the same commit to https://necros-mail-preview.necros.workers.dev.
+- No code/runtime changes in this documentation commit. Manual owner phone review is still needed, especially while the mobile composer and Undo Send controls are visible. Production DNS/MX, other Workers, mail delivery and `main` remain untouched.
