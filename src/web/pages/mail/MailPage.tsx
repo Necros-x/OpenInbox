@@ -28,7 +28,11 @@ const UNDO_MS = 6000;
 
 function isTyping(e: KeyboardEvent): boolean {
   const t = e.target as HTMLElement;
-  return t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName);
+  // Native interactive controls own Enter/Space and their own arrow keys.
+  // Do not also run global mail shortcuts when a row's Open button is focused.
+  return t.isContentEditable
+    || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(t.tagName)
+    || Boolean(t.closest('[role="button"], [role="menuitem"], [role="combobox"]'));
 }
 
 function MailApp() {
