@@ -235,7 +235,9 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.getByRole('button', { name: 'Refresh' }).click();
   await expect(page.locator('[data-thinking-orb]')).toBeVisible();
   await expect(page.getByText('Conversations up to date')).toBeVisible({ timeout: 20_000 });
-  await page.unroute('**/api/threads?*');
+  // Wait for every active delayed route handler before removing interception.
+  // Removing it immediately can auto-continue a request that the handler still owns.
+  await page.unrouteAll({ behavior: 'wait' });
   await notifications.click();
   await expect(page.getByRole('region', { name: 'Recent notifications' })).toContainText('Conversations up to date');
   await notifications.click();

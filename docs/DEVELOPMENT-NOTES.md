@@ -350,3 +350,7 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 ### 2026-11-17 — Stabilize read recovery browser regression locator
 - Earlier GitHub E2E run `44041951531` failed even though a conversation loaded: the old `getByText('Can we meet Thursday about the budget?')` was ambiguous after Phase 02B introduced a keyboard-focusable preview row; the text also appears in the actual open message article.
 - Narrowed the Playwright check to `getByRole('article').getByText(...)` so it checks the reader body rather than relying on global text uniqueness. No runtime behavior changed; do not mark CI verified until the new run completes.
+
+### 2026-11-17 — Playwright delayed-route cleanup race, not product regression
+- CI run `44042578899` passed lint/typecheck/unit/both builds. Playwright validated the status toast and returned to later steps, then failed with `route.continue: Route is already handled!` from the artificial 650ms network-delay hook because it was removed while another request remained in flight.
+- The test now removes route interception using `await page.unrouteAll({ behavior: 'wait' })`, ensuring delayed handler completion before continuing navigation. No application changes; the functionality and real server query behavior were already validated up to this point. The revised E2E result is pending.
