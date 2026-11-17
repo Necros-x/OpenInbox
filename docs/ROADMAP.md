@@ -207,3 +207,12 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Show actual query-status toast for manual Refresh and retry in Inbox and conversation reader.
 - [x] Extend E2E for notification popover and Thinking Orb in a held-open refresh, plus successful completed event.
 - [ ] Verify CI/Cloudflare, check visual placement and accessibility on phone, then expand to other true asynchronous workflows.
+
+### Verified Phase 02C quick notifications — 2026-11-17
+- [x] Official MIT Thinking Orbs React source integrated; no additional NPM runtime dependency.
+- [x] Shared toast provider supports success/error/info, duration-aware Undo, and real loading/retrying states with bounded recent-activity panel.
+- [x] App notification history cleared on sign-out and user change; new foreground inbox mail events surfaced when unread count actually increases.
+- [x] GitHub CI [44043236616](https://github.com/Necros-x/OpenInbox/actions/runs/44043236616) passed lint/typecheck/unit/integration/both builds and Playwright **2 passed / 1 skipped**.
+- [x] Cloudflare development preview deployment succeeded for commit `6bd9a11` (Builds `27d58aea-ee25-4766-8a9e-063e0f4c3dcb`).
+- [ ] User phone acceptance: toast placement, orb motion/reduced-motion, bell history and Undo behavior.
+- [ ] Next: Phase 02C scoped prefetch/read navigation and additional truthful state notices where users need them; do not replace the real authorization model with client notifications.

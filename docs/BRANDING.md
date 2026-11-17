@@ -104,3 +104,6 @@ The final slate theme code at `09a26bd` passed [CI 44039479377](https://github.c
 
 ### Thinking Orbs and in-app notification UI — 2026-11-17
 The official MIT Thinking Orbs React source is vendored under `src/web/components/ui/thinking-orbs`, tinted through the Carbon Black/Gunmetal/Slate CSS currentColor. `working` indicates a genuine pending query, `retrying` denotes a retry call and `waiting` visually accompanies the Undo countdown without claiming AI processing. Completed success/error/info events use differentiated icons and can be revisited in the memory-only notification bell. No browser persistence of notification details.
+
+### Thinking Orbs verification — 2026-11-17
+The actual upstream orb uses `currentColor`, so statuses follow NECROS Mail slate tokens. The existing Undo control remains a genuine timed action. [CI 44043236616](https://github.com/Necros-x/OpenInbox/actions/runs/44043236616) passed with two Playwright scenarios and one skipped optional screenshot; isolated Cloudflare preview build `27d58aea-ee25-4766-8a9e-063e0f4c3dcb` succeeded. The user has not yet reported phone acceptance of the new notifications.

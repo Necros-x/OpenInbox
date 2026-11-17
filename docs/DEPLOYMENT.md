@@ -97,3 +97,6 @@ The isolated `necros-mail-preview` Worker updated successfully via Cloudflare Bu
 
 ### Phase 02B staging update — 2026-11-17
 **Deployed:** `development` source `09a26bd` through Cloudflare Builds `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e`, successful, to https://necros-mail-preview.necros.workers.dev. The source commit passed [GitHub CI 44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377), including 2 passing Playwright flows, one optional screenshot test skipped. The preview remains an isolated Worker + D1 without production email routing or DNS.
+
+### Thinking Orbs notifications preview — 2026-11-17
+**Verified deployed commit:** `6bd9a11db484b8fb4cec59007cbe50b907c29013` on `development`. Cloudflare Builds `27d58aea-ee25-4766-8a9e-063e0f4c3dcb` reported success at https://necros-mail-preview.necros.workers.dev. GitHub CI [44043236616](https://github.com/Necros-x/OpenInbox/actions/runs/44043236616) passed all required jobs. Toast notification history is held in browser memory only, and the official MIT Thinking Orbs source is bundled locally. Production Worker/D1, domains, providers and `main` unchanged.
