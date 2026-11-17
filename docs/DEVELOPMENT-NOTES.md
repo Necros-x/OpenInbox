@@ -308,3 +308,12 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Tests:** `test/e2e/app.spec.ts` exercises Enter-to-open, simulated thread fetch 503 and recovery, plus exact global palette tokens in light/dark. Documentation: ROADMAP and DEVELOPMENT-NOTES updated in this focused commit.
 - **Validation:** must run CI lint/typecheck/unit/production and preview builds/Playwright and confirm isolated Cloudflare deploy; source changes alone are not a passing check.
 - **Unchanged:** authentication, Worker API, D1 schema, recipient/provider delivery, production DNS/mail routing and `main`.
+
+### 2026-11-17 — Verified Phase 02B and final slate theme deployment
+- **Brand code commits:** `f8ce517` (global theme, monogram/favicons), `1e7bd43` (PWA metadata and star indicators), each documented in its commit-specific notes. Both retain the five exact reference swatches.
+- **Reader code:** `b283806` added skeleton loading, failed-load retry/back, cached-content refresh handling, keyboard-focusable message buttons and Playwright tests for dark/light tokens + reader 503 recovery.
+- **Typecheck correction:** `ebc27c8` restored a `PageSpinner` import still needed by a different helper in the same `ThreadView.tsx` file. Initial CI for `b283806` found TS2304 and failed before release qualification.
+- **Keyboard correctness:** `09a26bd` prevents global mail shortcuts from processing Enter/Space navigation when a native button, link or interactive ARIA element is focused. This avoids duplicate/wrong-thread opens while allowing button-native activation. No mailbox API behavior changed.
+- **Verified CI:** [GitHub Actions 44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377) passed lint, typecheck, unit/integration tests, normal production build, isolated preview bundle build and Playwright: **2 passed, 1 skipped** (optional screenshot test). Test includes simulated read failure/Retry and exact light/dark palette variables.
+- **Cloudflare:** Build `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e` deployed code `09a26bdf1eb25ffeb6855aec4e9d68017f5c76a8` successfully to the isolated `necros-mail-preview` Worker and preview D1. No production DNS/MX, Nenasala resource, provider or `main` changes.
+- **Manual review pending:** owner should confirm light/dark slate colors, keyboard/read states and mobile Back control on the actual phone. Final logo remains temporary; platform tenant isolation/security prerequisites remain unchanged.

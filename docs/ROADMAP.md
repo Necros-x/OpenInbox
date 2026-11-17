@@ -188,3 +188,11 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Expose a native keyboard-focusable Open conversation button within each row without changing the separate Star or Select controls.
 - [x] Extend Playwright with true slate light/dark token assertions and read-failure/retry + keyboard opening; CI and Cloudflare staging verification pending.
 - [ ] Evaluate scoped, permission-aware prefetch after phone acceptance, without displaying prior-mailbox cached content across account switches.
+
+### Phase 02B and slate branding verification — 2026-11-17
+- [x] Owner-supplied five-tone carbon/slate palette applied across tokens, monogram, browser/PWA and star indicators in `development`.
+- [x] Conversation loading skeleton, error/retry, cached-refresh warning and keyboard-openable message rows implemented and tested.
+- [x] CI green for code `09a26bd` ([44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377)): lint, typecheck, unit/integration, both builds, Playwright **2 passed, 1 skipped**.
+- [x] Isolated Cloudflare preview deployment successful (Builds `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e`).
+- [ ] Owner to sign off phone visual slate theme and opening/closing/loading conversations. Final logo and full screen-reader audit remain pending.
+- [ ] Phase 02C candidate: bounded same-mailbox read prefetch and reading-pane interaction polish, only after verifying server-side access guards; do not cross-tenant prepopulate mail.

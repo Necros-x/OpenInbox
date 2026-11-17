@@ -94,3 +94,6 @@ The preview Worker at https://necros-mail-preview.necros.workers.dev was deploye
 
 ### Phase 02A staging verification — 2026-11-16
 The isolated `necros-mail-preview` Worker updated successfully via Cloudflare Builds `b6f826e9-9d1f-4ae6-8539-58bdf4b2ea00` from `development` commit `18e1c081`. GitHub Actions [43920273842](https://github.com/Necros-x/OpenInbox/actions/runs/43920273842) passed all required checks, including simulated network-failure recovery and mobile Refresh browser assertions. No production DNS/MX, providers, other Workers or `main` changed.
+
+### Phase 02B staging update — 2026-11-17
+**Deployed:** `development` source `09a26bd` through Cloudflare Builds `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e`, successful, to https://necros-mail-preview.necros.workers.dev. The source commit passed [GitHub CI 44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377), including 2 passing Playwright flows, one optional screenshot test skipped. The preview remains an isolated Worker + D1 without production email routing or DNS.

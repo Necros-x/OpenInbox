@@ -98,3 +98,6 @@ The user provided an image of five reference swatches and requested **replacing 
 | Pale Slate | `#ADB5BD` | dark mode accent, soft outlines |
 
 Both light/dark themes use these base swatches with neutral near-white/grey mixtures to maintain reading contrast. Status/error/success colors and user-defined label colors remain distinguishable for functional reasons. The temporary `N` monogram and favicon are now slate-toned, not gold; a final official logo is still pending. Core styles inherit theme variables from `src/web/index.css`. Production service logic, secrets, session IDs, D1 and mail transport are unchanged.
+
+### Palette implementation validation — 2026-11-17
+The final slate theme code at `09a26bd` passed [CI 44039479377](https://github.com/Necros-x/OpenInbox/actions/runs/44039479377); its browser test asserts `#212529` for dark background, `#adb5bd` for dark primary, and `#343a40` for light primary. Cloudflare Builds `4abe689a-b5f4-4852-9cd9-c58fd14d4b9e` reported successful staging deployment. Real-device visual acceptance of this new palette is pending.
