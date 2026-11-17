@@ -341,3 +341,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - `App.tsx` now observes authenticated session user ID transitions and clears the in-memory toast/history store whenever the user changes, signs out due to expiry or auth is reset. This complements the explicit successful-logout cleanup in `AppShell` and prevents old toast content leaking between accounts without a full reload.
 - Hook runs before conditional routes; the initial bootstrap does not erase already-empty transient notifications. No backend session cookie, D1, provider or mail route modifications.
 - CI and preview deployment still to be verified for this commit.
+
+### 2026-11-17 — Foreground new-mail quick notifications
+- `useMailSync` now announces **actual increased unread conversation counts** in a short in-app info toast while the tab is visible, adding the event to the new NotificationBell history. Existing browser Notification permission setting and hidden-tab behavior are preserved.
+- Renamed the browser notification tag to `necros-mail-new-mail` (only a display identifier); no provider, mail delivery, synchronization polling interval, D1 schema or API changes.
+- A small `useRef` keeps the latest toast callback stable inside the existing 20s sync tick without restarting polling on every render. CI/Cloudflare validation pending after commit.
