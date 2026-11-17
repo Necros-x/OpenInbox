@@ -10,7 +10,7 @@ import { Avatar, Kbd, Skeleton } from '../../components/ui/misc';
 import { ConfirmDialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../../components/ui/overlay';
 import { labelChip } from './labels';
 import { PickTimeDialog } from './PickTimeDialog';
-import { useThreadActions, useThreads, type Action } from './data';
+import { usePrefetchThread, useThreadActions, useThreads, type Action } from './data';
 
 const OPERATORS: [string, string][] = [
   ['from:', 'Sender name or address'],
@@ -65,6 +65,7 @@ export function ThreadList({
 }) {
   const q = useThreads(mailbox, view, query);
   const act = useThreadActions();
+  const prefetchThread = usePrefetchThread();
   const toast = useToast();
   const [search, setSearch] = useState(query);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -76,6 +77,30 @@ export function ThreadList({
   const labelsById = useMemo(() => new Map(mailboxes.flatMap((m) => m.labels.map((l) => [l.id, l] as const))), [mailboxes]);
   const sentinel = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const accessibleIds = useMemo(() => new Set(mailboxes.map((m) => m.id)), [mailboxes]);
+
+  const cancelHoverPrefetch = () => {
+    if (hoverTimer.current !== null) clearTimeout(hoverTimer.current);
+    hoverTimer.current = null;
+  };
+  const canPrefetch = (t: ThreadSummary) =>
+    t.messageCount > 0 && accessibleIds.has(t.mailboxId) &&
+    (mailbox === 'all' || mailbox === String(t.mailboxId));
+  const previewOnHover = (t: ThreadSummary, pointerType: string) => {
+    if (pointerType !== 'mouse' || !canPrefetch(t) || document.hidden) return;
+    cancelHoverPrefetch();
+    hoverTimer.current = setTimeout(() => {
+      hoverTimer.current = null;
+      void prefetchThread(t.id);
+    }, 180);
+  };
+  const previewOnFocus = (t: ThreadSummary) => {
+    if (canPrefetch(t) && !document.hidden) void prefetchThread(t.id);
+  };
+  useEffect(() => () => {
+    if (hoverTimer.current !== null) clearTimeout(hoverTimer.current);
+  }, []);
 
   useEffect(() => setSearch(query), [query]);
 
@@ -83,6 +108,7 @@ export function ThreadList({
   // the independently keyed React Query caches or reloading the application.
   useEffect(() => {
     if (container.current) container.current.scrollTop = 0;
+    cancelHoverPrefetch();
   }, [mailbox, view, query]);
 
   // Infinite scroll.
@@ -448,6 +474,9 @@ export function ThreadList({
                   <button
                     type="button"
                     aria-label={`Open conversation: ${t.subject || '(no subject)'}`}
+                    onPointerEnter={(event) => previewOnHover(t, event.pointerType)}
+                    onPointerLeave={cancelHoverPrefetch}
+                    onFocus={() => previewOnFocus(t)}
                     onClick={(event) => {
                       event.stopPropagation();
                       setFocusIndex(i);

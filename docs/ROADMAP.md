@@ -226,3 +226,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] CI [44045418853](https://github.com/Necros-x/OpenInbox/actions/runs/44045418853): lint, typecheck, unit tests, both builds, Playwright 2 passed / 1 skipped including mobile toast width and placement.
 - [x] Cloudflare development preview deployed commit `a16d10c` (Builds `7ead686f-8ccc-4df9-9aea-db8b3e00b6a6`).
 - [ ] Real-phone review when Compose and Undo Send are active; adjust vertical clearance if necessary without restoring full-width toast sizing.
+
+### Phase 02C conversation navigation — 2026-11-18
+- [x] Implement short 180ms desktop-hover and keyboard-focus prefetch of existing authorized non-draft thread rows; reuse 15-second `useThread` cache and invalidate on updates.
+- [x] No touch-scroll prefetch, no cross-mailbox placeholders, no unbounded background loading; verify API read guard still enforces mailbox membership.
+- [x] Extend member visibility test to cover Open conversation control; CI and preview result pending.
+- [ ] Verify behavior on desktop with DevTools network and phone without unnecessary mobile downloads; continue reading-pane UX after acceptance.

@@ -258,6 +258,8 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await bob.getByRole('button', { name: 'Save password' }).click();
   await expect(bob.getByText('For Bob only')).toBeVisible();
   await expect(bob.getByText('Q4 planning agenda')).toHaveCount(0);
+  // Preview remains limited to rows returned by the server's mailbox membership scope.
+  await expect(bob.getByRole('button', { name: 'Open conversation: Q4 planning agenda' })).toHaveCount(0);
   await expect(bob.getByRole('link', { name: 'NECROS Admin' })).toHaveCount(0);
   const adminApi = await bob.request.get(`${APP}/api/admin/overview`);
   expect(adminApi.status()).toBe(403);

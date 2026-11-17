@@ -28,8 +28,26 @@ export function useThreads(mailbox: string, view: string, q: string) {
   });
 }
 
+// A short stale window lets an already-authorized preview open without another
+// request; background synchronization and thread actions still invalidate it.
+export const THREAD_PREVIEW_STALE_MS = 15_000;
 export function useThread(id: number | null) {
-  return useQuery({ queryKey: ['thread', id], queryFn: () => get<ThreadDetail>(`/threads/${id}`), enabled: !!id });
+  return useQuery({
+    queryKey: ['thread', id],
+    queryFn: () => get<ThreadDetail>(`/threads/${id}`),
+    enabled: !!id,
+    staleTime: THREAD_PREVIEW_STALE_MS,
+  });
+}
+
+export function usePrefetchThread() {
+  const qc = useQueryClient();
+  return (id: number) =>
+    qc.prefetchQuery({
+      queryKey: ['thread', id],
+      queryFn: () => get<ThreadDetail>(`/threads/${id}`),
+      staleTime: THREAD_PREVIEW_STALE_MS,
+    });
 }
 
 export type Action = 'read' | 'unread' | 'star' | 'unstar' | 'archive' | 'inbox' | 'spam' | 'notspam' | 'trash' | 'delete' | 'snooze' | 'unsnooze' | 'label' | 'unlabel' | 'assign';
