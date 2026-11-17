@@ -174,7 +174,7 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await expect(page.getByRole('alert').getByText("Couldn't load conversation")).toBeVisible({ timeout: 30_000 });
   await page.unroute(failedReaderRoute);
   await page.getByRole('button', { name: 'Try again' }).click();
-  await expect(page.getByText('Can we meet Thursday about the budget?')).toBeVisible();
+  await expect(page.getByRole('article').getByText('Can we meet Thursday about the budget?')).toBeVisible();
   await page.getByRole('button', { name: 'Reply', exact: true }).last().click();
   await expect(page.locator('.ProseMirror table img[alt="Acme logo"]')).toBeVisible();
   await page.locator('.ProseMirror p').first().click();

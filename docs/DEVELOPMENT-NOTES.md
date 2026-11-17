@@ -346,3 +346,7 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - `useMailSync` now announces **actual increased unread conversation counts** in a short in-app info toast while the tab is visible, adding the event to the new NotificationBell history. Existing browser Notification permission setting and hidden-tab behavior are preserved.
 - Renamed the browser notification tag to `necros-mail-new-mail` (only a display identifier); no provider, mail delivery, synchronization polling interval, D1 schema or API changes.
 - A small `useRef` keeps the latest toast callback stable inside the existing 20s sync tick without restarting polling on every render. CI/Cloudflare validation pending after commit.
+
+### 2026-11-17 — Stabilize read recovery browser regression locator
+- Earlier GitHub E2E run `44041951531` failed even though a conversation loaded: the old `getByText('Can we meet Thursday about the budget?')` was ambiguous after Phase 02B introduced a keyboard-focusable preview row; the text also appears in the actual open message article.
+- Narrowed the Playwright check to `getByRole('article').getByText(...)` so it checks the reader body rather than relying on global text uniqueness. No runtime behavior changed; do not mark CI verified until the new run completes.
