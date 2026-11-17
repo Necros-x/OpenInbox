@@ -302,15 +302,16 @@ function ToastItem({ toast: t, dismiss }: { toast: Toast; dismiss: (id: number) 
 
   return (
     <div
+      data-necros-toast
       role={t.tone === 'error' ? 'alert' : 'status'}
       aria-live={t.tone === 'error' ? 'assertive' : 'polite'}
       className={cn(
-        'pointer-events-auto relative flex min-h-12 items-center gap-3 overflow-hidden rounded-xl border bg-surface py-2.5 pr-2.5 pl-3.5 text-[13px] text-fg shadow-pop animate-slide-up',
+        'pointer-events-auto relative flex min-h-12 w-fit max-w-full items-center gap-3 overflow-hidden rounded-xl border bg-surface py-2.5 pr-2.5 pl-3.5 text-[13px] text-fg shadow-pop animate-slide-up',
         t.tone === 'error' ? 'border-danger/35' : 'border-border',
       )}
     >
       {statusIcon(t.tone)}
-      <div className="min-w-0 flex-1 font-medium">{t.message}</div>
+      <div className="min-w-0 flex-1 break-words font-medium">{t.message}</div>
       {t.action && (
         <button
           type="button"
@@ -392,7 +393,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <NoticeContext.Provider value={{ items, markRead, clear: clearHistory }}>
         {children}
         {createPortal(
-          <div aria-label="In-app updates" className="pointer-events-none fixed top-[calc(66px+env(safe-area-inset-top))] right-3 left-3 z-[60] flex flex-col items-stretch gap-2 sm:top-auto sm:right-auto sm:bottom-6 sm:left-6 sm:w-[360px]">
+          <div aria-label="In-app updates" className="pointer-events-none fixed bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-[60] flex w-max max-w-[calc(100vw-24px)] -translate-x-1/2 flex-col items-center gap-2 sm:bottom-6">
             {toasts.map((t) => <ToastItem key={t.id + '-' + t.version} toast={t} dismiss={dismiss} />)}
           </div>,
           document.body,

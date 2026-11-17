@@ -216,3 +216,8 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Cloudflare development preview deployment succeeded for commit `6bd9a11` (Builds `27d58aea-ee25-4766-8a9e-063e0f4c3dcb`).
 - [ ] User phone acceptance: toast placement, orb motion/reduced-motion, bell history and Undo behavior.
 - [ ] Next: Phase 02C scoped prefetch/read navigation and additional truthful state notices where users need them; do not replace the real authorization model with client notifications.
+
+### Phase 02C — Bottom, content-sized status toasts (2026-11-17)
+- [x] Owner requested bottom placement and content-fit for every toast; applied to shared toast layer and retained mobile safe-area constraint.
+- [x] Extended phone Playwright to assert bottom anchored, non-full-width, in-viewport toast geometry.
+- [ ] Confirm mobile visual placement with real devices and open Compose toolbar; CI and isolated preview verification pending.

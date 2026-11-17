@@ -278,6 +278,15 @@ test('mobile Inbox navigation stays accessible on a phone viewport', async ({ br
     await page.getByRole('button', { name: 'Sign in' }).click({ timeout: 10_000 });
     await page.goto(`${APP}/mail/all/inbox`);
     await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+    await page.getByRole('button', { name: 'Refresh' }).click();
+    const toast = page.locator('[data-necros-toast]').first();
+    await expect(toast).toBeVisible();
+    const toastBounds = await toast.boundingBox();
+    expect(toastBounds).not.toBeNull();
+    expect(toastBounds!.width).toBeLessThan(366); // Fits content; never the full 390px viewport.
+    expect(toastBounds!.x).toBeGreaterThanOrEqual(12);
+    expect(toastBounds!.y).toBeGreaterThan(600); // Anchored near bottom, not at the top.
+    expect(toastBounds!.y + toastBounds!.height).toBeLessThanOrEqual(844);
     const menu = page.getByRole('button', { name: 'Menu', exact: true });
     await expect(menu).toBeVisible({ timeout: 15_000 });
     await expect(menu).toHaveAttribute('aria-expanded', 'false');

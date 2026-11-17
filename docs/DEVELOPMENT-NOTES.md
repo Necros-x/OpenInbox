@@ -362,3 +362,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Cloudflare:** Build `27d58aea-ee25-4766-8a9e-063e0f4c3dcb` **succeeded** for source commit `6bd9a11db484b8fb4cec59007cbe50b907c29013` on isolated `necros-mail-preview` Worker + D1. Preview: https://necros-mail-preview.necros.workers.dev. Main, real MX/DNS and Nenasala were not modified.
 - **Privacy/security:** activity history is ephemeral only, bounded to 20, cleared on logout and session identity change. Avoid storing mail details in third-party notification services. Notification center is client-side UI, not a push-delivery service or a guaranteed audit trail.
 - **Manual tests next:** verify bell, loading/retrying/waiting orbs, Refresh completion, Undo window and dark/light readability on phone. Avoid real messages and production providers on preview.
+
+### 2026-11-17 — Owner-requested compact bottom toast positioning
+- **Request:** move toasts from mobile top to bottom; make every toast content-sized instead of full width.
+- **Changed:** `src/web/components/ui/overlay.tsx` toast wrapper now bottom-center with safe-area inset, intrinsic `w-max` maximum viewport width and centered children; each ToastItem has `w-fit max-w-full` and wrapping message. This applies across all toast types and preserves the existing Undo countdown, action buttons, Thinking Orbs animations, alert/status semantics and notification bell history.
+- **Regression:** `test/e2e/app.spec.ts` phone viewport test triggers an actual Refresh toast and validates non-full-width geometry, bottom placement and viewport bounds.
+- **Unchanged:** mail provider/API/data/worker routes, D1 and production DNS. Main branch untouched. CI and preview deploy pending at commit creation.

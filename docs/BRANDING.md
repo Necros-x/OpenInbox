@@ -107,3 +107,6 @@ The official MIT Thinking Orbs React source is vendored under `src/web/component
 
 ### Thinking Orbs verification — 2026-11-17
 The actual upstream orb uses `currentColor`, so statuses follow NECROS Mail slate tokens. The existing Undo control remains a genuine timed action. [CI 44043236616](https://github.com/Necros-x/OpenInbox/actions/runs/44043236616) passed with two Playwright scenarios and one skipped optional screenshot; isolated Cloudflare preview build `27d58aea-ee25-4766-8a9e-063e0f4c3dcb` succeeded. The user has not yet reported phone acceptance of the new notifications.
+
+### Compact bottom toasts — 2026-11-17
+Following the owner's follow-up, all toast states (Thinking Orbs working/retrying/waiting and finished success/error/info) are now **bottom-centered** in both mobile and desktop viewports, no longer top-positioned on phones. Each toast is `w-fit` rather than taking a fixed 360px width or filling the phone. The shared stack shrinks to its contents, stays centered, and applies a viewport-edge maximum width to wrap longer notices instead of overflowing. Bottom placement respects `env(safe-area-inset-bottom)` on mobile. The header bell is unchanged.
