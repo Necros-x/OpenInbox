@@ -49,7 +49,7 @@ import { cn, storageGet } from '../../lib/utils';
 import type { Attachment, Mailbox, Message, ThreadDetail } from '../../lib/types';
 import { labelChip, labelDot } from './labels';
 import { Button, IconButton } from '../../components/ui/button';
-import { Avatar, Badge, Skeleton } from '../../components/ui/misc';
+import { Avatar, Badge, PageSpinner, Skeleton } from '../../components/ui/misc';
 import { ConfirmDialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../../components/ui/overlay';
 import { Textarea } from '../../components/ui/form';
 import { Tooltip } from '../../components/ui/tooltip';
