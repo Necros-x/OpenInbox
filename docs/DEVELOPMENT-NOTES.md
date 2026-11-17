@@ -322,3 +322,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Reviewed https://www.thinkingorbs.com and upstream `yogesharc/thinking-orbs` (MIT, version 0.1.2 in package metadata) and selected the **matching library shown by the user**, not the unrelated `thinking-orbs` npm package.
 - Added upstream `orb-core.ts` and React `orb.tsx` to `src/web/components/ui/thinking-orbs/`, preserving the upstream MIT LICENSE and copyright notice. Vendoring avoids introducing a new dependency or hand-editing the npm lockfile and supports offline, self-contained Cloudflare builds.
 - No UI behavior is changed in this source-only commit. Next commit will integrate the actual orb with existing NECROS ToastProvider and short in-app notifications; validation required after integration.
+
+### 2026-11-17 — Upgrade ToastProvider with Thinking Orbs and quick notification history
+- Extended the existing `src/web/components/ui/overlay.tsx` provider, **preserving original `toast.success/error/info/pending/dismiss` API and Undo countdown**.
+- Added indeterminate `toast.loading` and `toast.retrying` with the vendored MIT Thinking Orbs `working/retrying` animations and `waiting` for Undo pending. Orb states are visual indicators, not fake percentages, and inherit monochrome slate text color; source respects reduced-motion preferences.
+- Added `toast.update(id, tone, message)` for actual operation completion, with clean timeout management and descriptive screen-reader live regions. Added memory-only 20-item recent activity store (finished success/error/info), bounded transient stack, and mobile-top/desktop-bottom positioning to avoid covering the mobile Send toolbar.
+- Added `NotificationBell` compact history popover for app header. This commit only introduces the component and API; wiring it to the shell and actual actions is a separate commit. History is not stored in browser storage and `toast.clear()` will support account switch safety.
+- Validation: typecheck/CI to confirm; no provider or API changes. The upstream MIT license remains adjacent to its source.
