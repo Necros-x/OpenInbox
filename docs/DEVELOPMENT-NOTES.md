@@ -336,3 +336,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Manual folder Refresh and folder/reader retry now create actual Think Orbs `working` / `retrying` pending toasts and update the **same** toast to success/error after the query resolves. The pre-existing mail Undo countdown and send completion behavior remain intact.
 - Extended Playwright with a header notification smoke test and a held-open real refresh request that verifies the orb and then recent-history success.
 - Validation: GitHub CI and Cloudflare staging deployment must be confirmed; main, real client mail, domain routing and providers untouched.
+
+### 2026-11-17 — Clear quick notification state across session identity changes
+- `App.tsx` now observes authenticated session user ID transitions and clears the in-memory toast/history store whenever the user changes, signs out due to expiry or auth is reset. This complements the explicit successful-logout cleanup in `AppShell` and prevents old toast content leaking between accounts without a full reload.
+- Hook runs before conditional routes; the initial bootstrap does not erase already-empty transient notifications. No backend session cookie, D1, provider or mail route modifications.
+- CI and preview deployment still to be verified for this commit.

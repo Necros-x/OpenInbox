@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { useSession } from './lib/session';
 import { errorText } from './lib/api';
@@ -11,6 +11,7 @@ import { TwoFactorPage } from './pages/auth/TwoFactorPage';
 import { ChangePasswordPage } from './pages/auth/ChangePasswordPage';
 import { AppShell } from './components/layout/AppShell';
 import { APP_NAME } from '../shared/constants';
+import { useToast } from './components/ui/overlay';
 
 // Larger areas load on demand (the mail client pulls in the rich text editor).
 const MailPage = lazy(() => import('./pages/mail/MailPage'));
@@ -19,6 +20,16 @@ const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 
 export function App() {
   const { data: session, isLoading, error, refetch } = useSession();
+  const { clear } = useToast();
+  const previousAccount = useRef<number | null | undefined>(undefined);
+  // The toast provider lives above routing. Session expiry, forced logout or changing
+  // accounts must not expose transient notifications from the previous account.
+  useEffect(() => {
+    if (isLoading) return;
+    const account = session?.user?.id ?? null;
+    if (previousAccount.current !== undefined && previousAccount.current !== account) clear();
+    previousAccount.current = account;
+  }, [session?.user?.id, isLoading, clear]);
   if (isLoading) return <PageSpinner />;
   if (!session) {
     return (
