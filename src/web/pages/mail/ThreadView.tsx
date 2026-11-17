@@ -49,7 +49,7 @@ import { cn, storageGet } from '../../lib/utils';
 import type { Attachment, Mailbox, Message, ThreadDetail } from '../../lib/types';
 import { labelChip, labelDot } from './labels';
 import { Button, IconButton } from '../../components/ui/button';
-import { Avatar, Badge, PageSpinner } from '../../components/ui/misc';
+import { Avatar, Badge, Skeleton } from '../../components/ui/misc';
 import { ConfirmDialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../../components/ui/overlay';
 import { Textarea } from '../../components/ui/form';
 import { Tooltip } from '../../components/ui/tooltip';
@@ -100,7 +100,7 @@ export function ThreadView({
   replyRequest: { kind: ReplyKind; nonce: number } | null;
   nav?: ThreadNav;
 }) {
-  const { data, isLoading, error } = useThread(threadId);
+  const { data, isLoading, isRefetching, isRefetchError, error, refetch } = useThread(threadId);
   const act = useThreadActions();
   const toast = useToast();
   const qc = useQueryClient();
@@ -154,8 +154,54 @@ export function ThreadView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replyRequest?.nonce]);
 
-  if (isLoading) return <PageSpinner />;
-  if (error || !data) return <div className="p-8 text-center text-sm text-muted">{error ? errorText(error) : 'Conversation not found.'}</div>;
+  if (isLoading) {
+    return (
+      <div className="flex h-full min-h-0 flex-col" aria-busy="true">
+        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-2 sm:px-3">
+          <IconButton label="Back" onClick={onBack} icon={<ArrowLeft />} className={mobileIcon} />
+          <span role="status" className="text-[12px] text-muted">Opening conversation…</span>
+        </div>
+        <div className="scroll-thin min-h-0 flex-1 overflow-y-auto" role="status" aria-label="Loading conversation">
+          <div className="mx-auto flex max-w-[860px] flex-col gap-4 px-4 pt-7 md:px-9">
+            <Skeleton className="h-6 w-[min(72%,420px)]" />
+            <Skeleton className="h-3 w-32" />
+            <div className="mt-2 rounded-xl border border-border bg-surface px-4 py-5">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-9 w-9 rounded-full" />
+                <div className="flex flex-1 flex-col gap-2">
+                  <Skeleton className="h-3 w-36" />
+                  <Skeleton className="h-2.5 w-24" />
+                </div>
+              </div>
+              <div className="mt-7 flex flex-col gap-3">
+                <Skeleton className="h-3 w-[93%]" />
+                <Skeleton className="h-3 w-[79%]" />
+                <Skeleton className="h-3 w-[88%]" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (!data) {
+    return (
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="flex h-12 shrink-0 items-center border-b border-border px-2">
+          <IconButton label="Back" onClick={onBack} icon={<ArrowLeft />} className={mobileIcon} />
+          <span className="ml-2 text-[13px] font-medium">Conversation</span>
+        </div>
+        <div role="alert" className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+          <div className="text-base font-semibold">Couldn't load conversation</div>
+          <p className="mt-2 max-w-sm text-[13px] leading-5 text-muted">{error ? errorText(error) : 'Conversation not found.'}</p>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            <Button variant="primary" onClick={() => void refetch()}>Try again</Button>
+            <Button variant="secondary" onClick={onBack}>Back to messages</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const t = data.thread;
   const run = (action: Action, opts: Parameters<typeof act>[2] = {}, label?: string, leave = true) => {
@@ -307,6 +353,15 @@ export function ThreadView({
       </div>
 
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
+        {isRefetchError && (
+          <div role="status" className="flex flex-wrap items-center justify-between gap-2 border-b border-warning/25 bg-warning-soft px-4 py-2 text-[12.5px] text-muted">
+            <span>Couldn't refresh. Showing the last loaded conversation.</span>
+            <Button size="xs" variant="ghost" onClick={() => void refetch()}>Retry</Button>
+          </div>
+        )}
+        {isRefetching && !isRefetchError && (
+          <span role="status" className="sr-only">Refreshing conversation</span>
+        )}
         <div className="mx-auto flex max-w-[860px] flex-col gap-3 px-3.5 pt-[18px] pb-10 md:px-9 md:pt-7">
           <div className="px-1 pb-2 md:px-0.5">
             <h1 className="text-xl leading-[1.3] font-semibold tracking-[-0.02em] break-words text-pretty md:text-[22px]">{t.subject || '(no subject)'}</h1>

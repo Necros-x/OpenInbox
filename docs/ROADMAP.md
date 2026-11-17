@@ -181,3 +181,10 @@ Every implementation commit updates the appropriate focused documentation plus d
 ### NECROS slate branding (2026-11-17)
 - [x] User supplied exact five-swatch charcoal/slate palette; global light/dark CSS, temporary logo/favicon and star indicators updated; browser/PWA metadata changed to neutral slate-compatible paper.
 - [ ] Validate updated UI on phone in both modes; new official logo remains pending and functional label/status colors remain meaningful exceptions.
+
+### Phase 02B — Conversation reader and keyboard accessibility (2026-11-17)
+- [x] Replace reader-wide spinner with a recognizable conversation skeleton and usable Back control while loading.
+- [x] Add failed conversation load / Try again state and preserve the previous messages if a background refresh fails.
+- [x] Expose a native keyboard-focusable Open conversation button within each row without changing the separate Star or Select controls.
+- [x] Extend Playwright with true slate light/dark token assertions and read-failure/retry + keyboard opening; CI and Cloudflare staging verification pending.
+- [ ] Evaluate scoped, permission-aware prefetch after phone acceptance, without displaying prior-mailbox cached content across account switches.

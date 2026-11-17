@@ -301,3 +301,10 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - Updated browser `theme-color` and PWA manifest light background from the previous cream tone to neutral paper `#f5f6f7` and replaced yellow/gold starred-message icon styles with the new accessible slate neutral in both list and reader.
 - This follows the independent theme/monogram change `f8ce517`. Both are presentation-only and preserve backend/mail data, tenant permissions and `main`.
 - Full CI, light/dark phone visual review and live preview deployment remain to be checked on this commit.
+
+### 2026-11-17 — Phase 02B message reader and list navigation
+- **Reason:** Opening a conversation used a generic spinner and failed reads showed raw errors without recovery. Message rows had mouse-only `li` click behavior despite separate Star/Select buttons.
+- **Changed:** `ThreadView.tsx` reader skeleton (mobile Back included), load failure with Try again/Back, background refresh warning when cached data remains; `ThreadList.tsx` uses a native keyboard-focusable Open conversation button in the text section while retaining the row click, Star, and Select actions. No stale cross-mailbox placeholders/prefetch introduced.
+- **Tests:** `test/e2e/app.spec.ts` exercises Enter-to-open, simulated thread fetch 503 and recovery, plus exact global palette tokens in light/dark. Documentation: ROADMAP and DEVELOPMENT-NOTES updated in this focused commit.
+- **Validation:** must run CI lint/typecheck/unit/production and preview builds/Playwright and confirm isolated Cloudflare deploy; source changes alone are not a passing check.
+- **Unchanged:** authentication, Worker API, D1 schema, recipient/provider delivery, production DNS/mail routing and `main`.

@@ -436,7 +436,16 @@ export function ThreadList({
                       <Star className={cn('h-[15px] w-[15px]', t.starred ? 'fill-[var(--text-faint)] text-faint' : 'text-transparent group-hover:text-faint')} />
                     </button>
                   </div>
-                  <div className="flex min-w-0 flex-1 flex-col gap-px">
+                  <button
+                    type="button"
+                    aria-label={`Open conversation: ${t.subject || '(no subject)'}`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setFocusIndex(i);
+                      onOpen(t);
+                    }}
+                    className="flex min-w-0 flex-1 flex-col gap-px rounded-md text-left focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
                     <div className="flex items-center gap-1.5 text-sm leading-[19px] md:text-[13px]">
                       <span className={cn('min-w-0 flex-1 truncate', unread ? 'font-semibold' : 'font-medium', strong ? 'text-fg' : 'text-muted')}>
                         {t.draftCount > 0 && (
@@ -466,7 +475,7 @@ export function ThreadList({
                       })}
                       <span className="min-w-0 flex-1 truncate text-faint">{t.snippet}</span>
                     </div>
-                  </div>
+                  </button>
                 </li>
               );
               })}

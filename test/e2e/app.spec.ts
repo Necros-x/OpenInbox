@@ -60,8 +60,11 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   // Setup and auth pages must offer a working theme switch even before the owner signs in.
   await page.getByRole('button', { name: 'Switch to dark mode' }).click();
   await expect(page.locator('html')).toHaveClass(/dark/);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())).toBe('#212529');
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--primary').trim())).toBe('#adb5bd');
   await page.getByRole('button', { name: 'Switch to light mode' }).click();
   await expect(page.locator('html')).not.toHaveClass(/dark/);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--primary').trim())).toBe('#343a40');
   await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled({ timeout: 30_000 });
   await shot(page, 'setup-checks');
   await page.getByRole('button', { name: 'Continue' }).click();
@@ -154,7 +157,17 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
   await expect(page.getByText('Q4 planning agenda')).toBeVisible();
   await expect(page.getByText('For Bob only')).toHaveCount(0);
-  await page.getByText('Q4 planning agenda').click();
+  // A keyboard user must be able to open a message, and a failed read must be retryable.
+  const failedReaderRoute = /\/api\/threads\/\d+(?:\?|$)/;
+  await page.route(failedReaderRoute, async (route) => {
+    await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { code: 'unavailable', message: 'Temporary failure' } }) });
+  });
+  const openConversation = page.getByRole('button', { name: 'Open conversation: Q4 planning agenda' });
+  await openConversation.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('alert').getByText("Couldn't load conversation")).toBeVisible({ timeout: 30_000 });
+  await page.unroute(failedReaderRoute);
+  await page.getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByText('Can we meet Thursday about the budget?')).toBeVisible();
   await page.getByRole('button', { name: 'Reply', exact: true }).last().click();
   await expect(page.locator('.ProseMirror table img[alt="Acme logo"]')).toBeVisible();
