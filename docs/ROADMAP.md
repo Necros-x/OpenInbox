@@ -239,3 +239,12 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Cloudflare isolated preview build succeeded for `09c55f3` (Builds `81c68f98-5311-4f5e-9064-25b65e357368`).
 - [x] Confirmed no matching `mail.necros.co` custom-domain mapping, DNS record, or Worker route exists in the connected Cloudflare account; no destructive operation necessary.
 - [ ] Owner to review performance on desktop, normal folder flow on phone and verify `mail.necros.co` remains disconnected before production planning.
+
+### Phase 02C manual acceptance — 2026-11-18
+- [x] Owner reported 5/5 PASS: desktop hover/responsiveness, phone folder/list UX, Refresh and compact bottom Thinking Orbs, staging-only hostname.
+
+### Phase 02D — Mobile conversation navigator (2026-11-18)
+- [x] Add 44px phone previous/next controls, accessible labels and loaded position counter with correct first/last disabled states.
+- [x] Clarify loaded-only counts for paginated mailboxes in mobile and desktop views.
+- [x] Extend full-flow and mobile E2E with two mock conversations and previous/next navigation.
+- [ ] Verify CI / Cloudflare preview and seek real-phone acceptance. Review reading pane focus and scroll behavior next.

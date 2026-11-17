@@ -206,6 +206,23 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
     'maya@acme.test',
     'admin@example.com',
   );
+  // Add a second independent mock conversation to verify previous/next navigation.
+  expect(await deliver(mail({
+    from: 'Maya Chen <maya@acme.test>',
+    to: 'admin@example.com',
+    subject: 'Operations update',
+    body: 'Operations plan for Friday.',
+    id: 'ops-update-1@acme.test',
+  }), 'maya@acme.test', 'admin@example.com')).toBe(200);
+  await page.goto('/mail/all/inbox');
+  await expect(page.getByRole('button', { name: 'Open conversation: Operations update' })).toBeVisible();
+  await page.getByRole('button', { name: 'Open conversation: Operations update' }).click();
+  await expect(page.getByRole('heading', { name: 'Operations update' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Next', exact: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Q4 planning agenda' })).toBeVisible();
+  await page.getByRole('button', { name: 'Previous', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Operations update' })).toBeVisible();
   await page.goto('/mail/all/inbox');
   await expect(page.locator('li').filter({ hasText: 'Q4 planning agenda' })).toHaveCount(1);
   await expect(page.locator('li').filter({ hasText: 'Q4 planning agenda' }).getByText('3', { exact: true })).toBeVisible();
@@ -309,6 +326,20 @@ test('mobile Inbox navigation stays accessible on a phone viewport', async ({ br
     await close.click({ timeout: 10_000 });
     await expect(drawer).toHaveClass(/-translate-x-full/);
     await expect(menu).toBeFocused();
+    // Mobile pager should make adjacent conversations reachable without reopening the list.
+    await page.getByRole('button', { name: 'Open conversation: Operations update' }).click();
+    const pager = page.getByRole('navigation', { name: 'Conversation navigation' });
+    await expect(pager).toBeVisible();
+    const bounds = await pager.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(390);
+    await pager.getByRole('button', { name: 'Next conversation' }).click();
+    await expect(page.getByRole('heading', { name: 'Q4 planning agenda' })).toBeVisible();
+    await pager.getByRole('button', { name: 'Previous conversation' }).click();
+    await expect(page.getByRole('heading', { name: 'Operations update' })).toBeVisible();
+    await page.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Open conversation: Operations update' })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
   } finally {
     await ctx.close();

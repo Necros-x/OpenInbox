@@ -63,6 +63,7 @@ type ReplyKind = 'reply' | 'replyAll' | 'forward';
 export interface ThreadNav {
   index: number;
   total: number;
+  hasMore: boolean;
   prev?: () => void;
   next?: () => void;
 }
@@ -318,7 +319,7 @@ export function ThreadView({
         {nav && nav.total > 1 && (
           <>
             <span className="mr-1 text-xs text-faint tabular-nums">
-              {nav.index + 1} of {nav.total}
+              {nav.index + 1} of {nav.total}{nav.hasMore ? ' loaded' : ''}
             </span>
             <IconButton label="Previous" shortcut="K" onClick={nav.prev} disabled={!nav.prev} icon={<ChevronUp />} />
             <IconButton label="Next" shortcut="J" onClick={nav.next} disabled={!nav.next} icon={<ChevronDown />} />
@@ -362,6 +363,27 @@ export function ThreadView({
         </Menu>
       </div>
 
+      {nav && nav.total > 1 && (
+        <nav aria-label="Conversation navigation" className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border bg-surface px-3 md:hidden">
+          <IconButton
+            label="Previous conversation"
+            onClick={nav.prev}
+            disabled={!nav.prev}
+            icon={<ChevronUp aria-hidden="true" />}
+            className={mobileIcon}
+          />
+          <span role="status" className="min-w-0 text-center text-[12px] font-medium tabular-nums text-muted">
+            {nav.index + 1} of {nav.total}{nav.hasMore ? ' loaded' : ''}
+          </span>
+          <IconButton
+            label="Next conversation"
+            onClick={nav.next}
+            disabled={!nav.next}
+            icon={<ChevronDown aria-hidden="true" />}
+            className={mobileIcon}
+          />
+        </nav>
+      )}
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
         {isRefetchError && (
           <div role="status" className="flex flex-wrap items-center justify-between gap-2 border-b border-warning/25 bg-warning-soft px-4 py-2 text-[12.5px] text-muted">

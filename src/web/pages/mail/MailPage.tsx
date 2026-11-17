@@ -387,6 +387,7 @@ function MailApp() {
       ? {
           index: position,
           total: list.length,
+          hasMore: Boolean(threads.hasNextPage),
           prev: position > 0 ? () => openThread(list[position - 1]) : undefined,
           next: list[position + 1] ? () => openThread(list[position + 1]) : undefined,
         }
