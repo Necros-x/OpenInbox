@@ -100,3 +100,8 @@ The isolated `necros-mail-preview` Worker updated successfully via Cloudflare Bu
 
 ### Thinking Orbs notifications preview — 2026-11-17
 **Verified deployed commit:** `6bd9a11db484b8fb4cec59007cbe50b907c29013` on `development`. Cloudflare Builds `27d58aea-ee25-4766-8a9e-063e0f4c3dcb` reported success at https://necros-mail-preview.necros.workers.dev. GitHub CI [44043236616](https://github.com/Necros-x/OpenInbox/actions/runs/44043236616) passed all required jobs. Toast notification history is held in browser memory only, and the official MIT Thinking Orbs source is bundled locally. Production Worker/D1, domains, providers and `main` unchanged.
+
+### Accidental custom domain control audit — 2026-11-18
+Cloudflare dashboard screenshot suggested `mail.necros.co` was marked Active for a preview, but authenticated account API checks returned zero Worker custom domains and no DNS/Worker route for `mail.necros.co` in the `necros.co` zone. Accordingly no association could be removed. The only verified working development preview remains https://necros-mail-preview.necros.workers.dev. Do not bind `mail.necros.co` until the full organization isolation, mail delivery and production readiness plan is approved.
+
+Phase 02C preview code `09c55f3` was successfully deployed by Cloudflare Builds `81c68f98-5311-4f5e-9064-25b65e357368`, verified in GitHub Actions [44173682340](https://github.com/Necros-x/OpenInbox/actions/runs/44173682340). No production routing, MX or other Worker changes.

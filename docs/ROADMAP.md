@@ -232,3 +232,10 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] No touch-scroll prefetch, no cross-mailbox placeholders, no unbounded background loading; verify API read guard still enforces mailbox membership.
 - [x] Extend member visibility test to cover Open conversation control; CI and preview result pending.
 - [ ] Verify behavior on desktop with DevTools network and phone without unnecessary mobile downloads; continue reading-pane UX after acceptance.
+
+### Phase 02C verified — 2026-11-18
+- [x] Controlled desktop-hover/keyboard-focus prefetch with 15-second freshness guard, no touch-scroll preloading. Server `assertThread` mailbox-membership enforcement retained.
+- [x] Two CI runs passed ([44173671517](https://github.com/Necros-x/OpenInbox/actions/runs/44173671517), [44173682340](https://github.com/Necros-x/OpenInbox/actions/runs/44173682340)), including Playwright.
+- [x] Cloudflare isolated preview build succeeded for `09c55f3` (Builds `81c68f98-5311-4f5e-9064-25b65e357368`).
+- [x] Confirmed no matching `mail.necros.co` custom-domain mapping, DNS record, or Worker route exists in the connected Cloudflare account; no destructive operation necessary.
+- [ ] Owner to review performance on desktop, normal folder flow on phone and verify `mail.necros.co` remains disconnected before production planning.
