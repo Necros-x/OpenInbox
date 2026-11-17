@@ -177,3 +177,7 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Isolated Cloudflare preview deployed from `development` (Builds `b6f826e9-9d1f-4ae6-8539-58bdf4b2ea00`).
 - [ ] Owner to verify Refresh, folder position and responsiveness on phone. To test the offline state safely, briefly disable connectivity only in this staging preview while loading an uncached folder, then reconnect and retry; do not use production accounts.
 - [ ] Phase 02B: reading-pane and list usability improvements, scoped prefetch; preserve tenant-bound query caches and existing authorization.
+
+### NECROS slate branding (2026-11-17)
+- [x] User supplied exact five-swatch charcoal/slate palette; global light/dark CSS, temporary logo/favicon and star indicators updated; browser/PWA metadata changed to neutral slate-compatible paper.
+- [ ] Validate updated UI on phone in both modes; new official logo remains pending and functional label/status colors remain meaningful exceptions.

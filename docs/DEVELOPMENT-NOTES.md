@@ -296,3 +296,8 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 ### 2026-11-17 — Approved slate palette, batch A (base theme and monogram)
 - Changed `src/web/index.css` design tokens in both themes and the temporary logo + favicon to the owner's exact five-swatch Carbon Black / Gunmetal / Iron Grey / Slate Grey / Pale Slate reference. Updated `src/web/lib/theme.ts` dark/light browser theme value.
 - Explained roles and accessible neutral surfaces in `docs/BRANDING.md`. No providers, routes, database, auth, production mail/DNS or main changes. Do not claim CI/phone verification until checked.
+
+### 2026-11-17 — Slate metadata and starred-message indicators (brand batch B)
+- Updated browser `theme-color` and PWA manifest light background from the previous cream tone to neutral paper `#f5f6f7` and replaced yellow/gold starred-message icon styles with the new accessible slate neutral in both list and reader.
+- This follows the independent theme/monogram change `f8ce517`. Both are presentation-only and preserve backend/mail data, tenant permissions and `main`.
+- Full CI, light/dark phone visual review and live preview deployment remain to be checked on this commit.

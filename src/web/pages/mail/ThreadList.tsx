@@ -433,7 +433,7 @@ export function ThreadList({
                         act([t.id], t.starred ? 'unstar' : 'star');
                       }}
                     >
-                      <Star className={cn('h-[15px] w-[15px]', t.starred ? 'fill-[oklch(0.78_0.16_78)] text-[oklch(0.78_0.16_78)]' : 'text-transparent group-hover:text-faint')} />
+                      <Star className={cn('h-[15px] w-[15px]', t.starred ? 'fill-[var(--text-faint)] text-faint' : 'text-transparent group-hover:text-faint')} />
                     </button>
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col gap-px">
@@ -449,7 +449,7 @@ export function ThreadList({
                         {t.messageCount > 1 && <span className="ml-1.5 text-xs font-normal text-faint">{t.messageCount}</span>}
                       </span>
                       {t.hasAttachments && <Paperclip className="h-[13px] w-[13px] shrink-0 text-faint" />}
-                      {t.starred && <Star className="h-3 w-3 shrink-0 fill-[oklch(0.78_0.16_78)] text-[oklch(0.78_0.16_78)] md:hidden" />}
+                      {t.starred && <Star className="h-3 w-3 shrink-0 fill-[var(--text-faint)] text-faint md:hidden" />}
                       <span className={cn('shrink-0 text-xs tabular-nums', unread ? 'font-semibold text-fg' : 'text-faint')}>
                         {listDate(view === 'sent' && t.lastSentAt ? t.lastSentAt : view === 'snoozed' && t.snoozedUntil ? t.snoozedUntil : t.lastMessageAt)}
                       </span>

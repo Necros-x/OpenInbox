@@ -269,7 +269,7 @@ export function ThreadView({
             {sep}
           </>
         )}
-        <IconButton label={t.starred ? 'Unstar' : 'Star'} shortcut="S" onClick={() => run(t.starred ? 'unstar' : 'star', {}, undefined, false)} icon={<Star className={cn(t.starred && 'fill-[oklch(0.78_0.16_78)] text-[oklch(0.78_0.16_78)]')} />} />
+        <IconButton label={t.starred ? 'Unstar' : 'Star'} shortcut="S" onClick={() => run(t.starred ? 'unstar' : 'star', {}, undefined, false)} icon={<Star className={cn(t.starred && 'fill-[var(--text-faint)] text-faint')} />} />
       </div>
 
       {/* Mobile toolbar: 44px targets, the rest in More */}
