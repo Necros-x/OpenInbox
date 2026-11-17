@@ -5,9 +5,9 @@ import { APP_NAME } from '../../shared/constants';
 export function LogoMark({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-      <rect width="64" height="64" rx="16" fill="#1c1b19" />
-      <rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#c2a16d" strokeOpacity=".65" strokeWidth="2" />
-      <path d="M20 44V20l24 24V20" fill="none" stroke="#dbbd86" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+      <rect width="64" height="64" rx="16" fill="#212529" />
+      <rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#6C757D" strokeOpacity=".65" strokeWidth="2" />
+      <path d="M20 44V20l24 24V20" fill="none" stroke="#ADB5BD" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

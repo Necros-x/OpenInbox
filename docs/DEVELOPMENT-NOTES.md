@@ -292,3 +292,7 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Cloudflare:** Builds run `b6f826e9-9d1f-4ae6-8539-58bdf4b2ea00` reported **success** for `development` source `18e1c081`. Staging remains https://necros-mail-preview.necros.workers.dev using its isolated Worker and D1.
 - **Security/design:** No cross-mailbox stale placeholder data, no API schema/auth/provider changes, no mail routing/DNS production activity and no changes to `main`. This validates the tested flows but does not imply every offline or mobile network condition was manually tested.
 - **Next:** user phone acceptance of folder switching/Refresh/offline failure handling; Phase 02B message-list/read-pane UX, scoped prefetch and accessibility review; final approved NECROS brand assets remain pending.
+
+### 2026-11-17 — Approved slate palette, batch A (base theme and monogram)
+- Changed `src/web/index.css` design tokens in both themes and the temporary logo + favicon to the owner's exact five-swatch Carbon Black / Gunmetal / Iron Grey / Slate Grey / Pale Slate reference. Updated `src/web/lib/theme.ts` dark/light browser theme value.
+- Explained roles and accessible neutral surfaces in `docs/BRANDING.md`. No providers, routes, database, auth, production mail/DNS or main changes. Do not claim CI/phone verification until checked.

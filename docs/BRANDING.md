@@ -84,3 +84,17 @@ After correcting a native-autofocus ordering issue in the Add User form, [GitHub
 
 ### Phase 01C user phone acceptance (2026-11-16)
 Owner reported six successful phone checks (Compose layout, Send toolbar, schedule date/time flow and fit, admin dialog close, light/dark readability). This closes the requested manual checks without substituting for screen-reader coverage, final logo artwork or an approved gold palette. Subsequent folder-resilience changes are Phase 02A, not a retroactive Phase 01 redesign.
+
+## Owner-selected NECROS slate palette — 2026-11-17
+
+The user provided an image of five reference swatches and requested **replacing gold** with these exact colors:
+
+| Swatch | HEX | Use |
+| --- | --- | --- |
+| Carbon Black | `#212529` | dark canvas, monogram backdrop, primary text |
+| Gunmetal | `#343A40` | main controls, dark raised surface |
+| Iron Grey | `#495057` | muted light text, dark borders |
+| Slate Grey | `#6C757D` | subtle light text, monogram outline |
+| Pale Slate | `#ADB5BD` | dark mode accent, soft outlines |
+
+Both light/dark themes use these base swatches with neutral near-white/grey mixtures to maintain reading contrast. Status/error/success colors and user-defined label colors remain distinguishable for functional reasons. The temporary `N` monogram and favicon are now slate-toned, not gold; a final official logo is still pending. Core styles inherit theme variables from `src/web/index.css`. Production service logic, secrets, session IDs, D1 and mail transport are unchanged.
