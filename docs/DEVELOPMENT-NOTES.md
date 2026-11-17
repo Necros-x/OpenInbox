@@ -394,3 +394,9 @@ Use a spare/test domain and non-production Cloudflare resources. Validate Email 
 - **Implementation:** added a compact phone-only navigation row below mobile reader toolbar, using 44px touch controls, current position and correctly disabled first/last buttons. Existing desktop navigation and keyboard shortcuts remain unchanged. Both counter variants say `loaded` when additional list pages are available.
 - **Regression:** E2E delivers a second independent mock thread to the admin mailbox, checks desktop previous/next and phone pager navigation, and verifies phone pager fits in the viewport. No real provider emails.
 - **Boundary:** unchanged D1, Worker mail API/auth, tenant rules, production DNS, `main`. CI and isolated Cloudflare deployment require verification after commit.
+
+### 2026-11-18 — Verified Phase 02D mobile conversation navigation
+- **Code revision:** `fe74659b2d69977eca47b30dc1f19b6501d4543b`. Owner's prior Phase 02C phone and desktop checklist was recorded as 5/5 PASS in that same commit.
+- **CI:** [44175726336](https://github.com/Necros-x/OpenInbox/actions/runs/44175726336) and [44175714640](https://github.com/Necros-x/OpenInbox/actions/runs/44175714640) both completed **successfully** for the code revision: lint, TypeScript, unit/integration tests, production Vite build, preview Worker bundle and Playwright **2 passed, 1 skipped**. The browser flow includes two mock conversations, desktop Next/Previous and mobile in-viewport navigation.
+- **Cloudflare Builds:** deployment `fbe5a475-bbcc-4175-8a61-034ab1c17708` succeeded for `fe74659`, publishing to https://necros-mail-preview.necros.workers.dev on isolated `development` resources.
+- **Manual QA remaining:** phone previous/next behavior, screen fit and reader toolbar layout in light/dark mode. The skipped screenshot test remains skipped. No `main`, production DNS/MX or mail-provider modifications.

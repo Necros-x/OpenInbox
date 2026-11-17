@@ -248,3 +248,9 @@ Every implementation commit updates the appropriate focused documentation plus d
 - [x] Clarify loaded-only counts for paginated mailboxes in mobile and desktop views.
 - [x] Extend full-flow and mobile E2E with two mock conversations and previous/next navigation.
 - [ ] Verify CI / Cloudflare preview and seek real-phone acceptance. Review reading pane focus and scroll behavior next.
+
+### Verified Phase 02D — 2026-11-18
+- [x] GitHub CI passed for `fe74659` ([44175726336](https://github.com/Necros-x/OpenInbox/actions/runs/44175726336) and [44175714640](https://github.com/Necros-x/OpenInbox/actions/runs/44175714640)); Playwright 2 passed and one optional screenshot test skipped.
+- [x] Cloudflare isolated preview deployed code `fe74659` successfully (Builds `fbe5a475-bbcc-4175-8a61-034ab1c17708`).
+- [ ] Owner phone acceptance: previous/next buttons and boundaries, loaded position counter, mobile Back and long-subject layout, light/dark readability.
+- [ ] Phase 02E: reading pane focus/scroll restoration, accessible long message controls; maintain strict server-side mailbox authorization and avoid unnecessary mail API changes.
