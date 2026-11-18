@@ -1,14 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { post, errorText } from '../../lib/api';
-import { useRefreshSession, useSession } from '../../lib/session';
+import { useRefreshSession } from '../../lib/session';
 import { Button } from '../../components/ui/button';
 import { Field, Input, PasswordInput } from '../../components/ui/form';
 import { Alert } from '../../components/ui/misc';
 import { AuthLayout } from './AuthLayout';
+import { INBOX_NAME } from '../../../shared/constants';
 
 export function LoginPage() {
-  const { data: session } = useSession();
   const refresh = useRefreshSession();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -34,7 +34,7 @@ export function LoginPage() {
   };
 
   return (
-    <AuthLayout title={`Sign in to ${session?.instanceName ?? 'OpenInbox'}`} footer={<Link to="/recover" className="hover:text-fg">Owner locked out?</Link>}>
+    <AuthLayout title={`Sign in to ${INBOX_NAME}`} footer={<Link to="/recover" className="hover:text-fg">Owner locked out?</Link>}>
       <form onSubmit={submit} className="space-y-4">
         {error && <Alert tone="danger">{error}</Alert>}
         <Field label="Email" id="email">

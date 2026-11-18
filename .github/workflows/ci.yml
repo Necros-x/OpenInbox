@@ -2,8 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, development]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,6 +24,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Check isolated Cloudflare preview bundle (no account access)
+        run: node scripts/check-preview-build.mjs
 
   e2e:
     name: End-to-end (Playwright)

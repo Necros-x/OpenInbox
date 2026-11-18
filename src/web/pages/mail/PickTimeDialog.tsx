@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { CalendarClock } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Field, Input } from '../../components/ui/form';
@@ -22,6 +22,8 @@ export function PickTimeDialog({
   description?: string;
   confirmLabel: string;
 }) {
+  const dateId = useId();
+  const timeId = useId();
   const [date, setDate] = useState('');
   const [time, setTime] = useState('08:00');
   useEffect(() => {
@@ -55,15 +57,15 @@ export function PickTimeDialog({
         </>
       }
     >
-      <div className="grid grid-cols-[1fr_130px] gap-2.5">
-        <Field label="Date">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1fr_130px]">
+        <Field label="Date" id={dateId}>
           <div className="relative">
             <CalendarClock className="pointer-events-none absolute top-1/2 left-2.5 h-[15px] w-[15px] -translate-y-1/2 text-faint" />
-            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="pl-8" />
+            <Input id={dateId} type="date" value={date} onChange={(e) => setDate(e.target.value)} className="pl-8" />
           </div>
         </Field>
-        <Field label="Time">
-          <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+        <Field label="Time" id={timeId}>
+          <Input id={timeId} type="time" value={time} onChange={(e) => setTime(e.target.value)} />
         </Field>
       </div>
       {date && time && !valid && <p className="mt-2 text-xs text-danger">Pick a time at least a minute from now.</p>}

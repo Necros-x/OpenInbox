@@ -9,7 +9,8 @@ import { useTheme, type Theme } from '../../lib/theme';
 import { cn } from '../../lib/utils';
 import { CommandPalette, KeyCombo, SHORTCUTS } from '../../pages/mail/CommandPalette';
 import { LogoMark } from '../Logo';
-import { Dialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../ui/overlay';
+import { APP_NAME, INBOX_NAME } from '../../../shared/constants';
+import { Dialog, Menu, MenuItem, MenuLabel, MenuSeparator, NotificationBell, useToast } from '../ui/overlay';
 import { Avatar, Kbd } from '../ui/misc';
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
@@ -49,6 +50,8 @@ export function AppShell() {
       toast.error(errorText(e));
       return;
     }
+    // Clear memory-only notification history before switching to another account.
+    toast.clear();
     // Mark the session signed out in place and drop everything else. (Clearing the whole cache
     // orphaned the session query, so the app kept the old user and never reached the login page.)
     navigate('/login', { replace: true });
@@ -59,10 +62,11 @@ export function AppShell() {
   const nav = (to: string, label: string, Icon: typeof Inbox) => (
     <NavLink
       to={to}
+      aria-label={label}
       className={({ isActive }) =>
         cn(
-          'flex h-7 items-center gap-[7px] rounded-[7px] px-2.5 text-[13px] font-medium transition-colors [&>svg]:h-[15px] [&>svg]:w-[15px]',
-          isActive ? 'bg-surface-2 text-fg [&>svg]:text-muted' : 'text-muted hover:text-fg',
+          'flex h-10 min-w-10 items-center justify-center gap-2 rounded-[10px] px-2.5 text-[13px] font-medium transition-colors sm:h-9 sm:min-w-0 sm:justify-start [&>svg]:h-[17px] [&>svg]:w-[17px]',
+          isActive ? 'bg-primary-soft text-primary-text' : 'text-muted hover:bg-surface-2 hover:text-fg',
         )
       }
     >
@@ -79,14 +83,14 @@ export function AppShell() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-bg pr-3 pl-3.5 sm:gap-5">
-        <NavLink to="/" className="flex items-center gap-[9px] md:w-[230px]">
-          <LogoMark size={22} />
-          <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{session?.instanceName ?? 'OpenInbox'}</span>
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-3 sm:gap-4 sm:px-4">
+        <NavLink to="/" className="flex items-center gap-[9px] md:w-[230px]" aria-label={APP_NAME}>
+          <LogoMark size={26} />
+          <span className="hidden truncate text-sm font-semibold tracking-[-0.01em] md:inline">{APP_NAME}</span>
         </NavLink>
-        <nav className="flex items-center gap-0.5">
-          {nav('/mail', 'Mail', Inbox)}
-          {isAdmin && nav('/admin', 'Admin', LayoutGrid)}
+        <nav aria-label="Primary" className="flex items-center gap-0.5">
+          {nav('/mail', INBOX_NAME, Inbox)}
+          {isAdmin && nav('/admin', 'NECROS Admin', LayoutGrid)}
         </nav>
         <div className="flex-1" />
         <button
@@ -98,6 +102,7 @@ export function AppShell() {
           <span className="flex-1 text-left">Jump to…</span>
           <Kbd>{isMac ? '⌘K' : 'Ctrl K'}</Kbd>
         </button>
+        <NotificationBell />
         <Menu
           className="w-[264px]"
           trigger={({ onClick, open }) => (
@@ -134,7 +139,7 @@ export function AppShell() {
           <MenuItem icon={<LogOut />} onClick={signOut}>
             Sign out
           </MenuItem>
-          <div className="px-2 pt-1.5 pb-1 text-[11px] text-faint">OpenInbox {session?.version}</div>
+          <div className="px-2 pt-1.5 pb-1 text-[11px] text-faint">{APP_NAME} {session?.version}</div>
         </Menu>
       </header>
       <main className="min-h-0 flex-1">

@@ -56,7 +56,15 @@ test.beforeAll(async () => {
 test('setup, send, receive, reply, search and isolate members', async ({ page, browser }) => {
   // 1. Setup: checks, admin email, domain automation.
   await page.goto('/');
-  await expect(page.getByText('Welcome to OpenInbox')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Welcome to NECROS Mail' })).toBeVisible();
+  // Setup and auth pages must offer a working theme switch even before the owner signs in.
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(page.locator('html')).toHaveClass(/dark/);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())).toBe('#212529');
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--primary').trim())).toBe('#adb5bd');
+  await page.getByRole('button', { name: 'Switch to light mode' }).click();
+  await expect(page.locator('html')).not.toHaveClass(/dark/);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--primary').trim())).toBe('#343a40');
   await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled({ timeout: 30_000 });
   await shot(page, 'setup-checks');
   await page.getByRole('button', { name: 'Continue' }).click();
@@ -74,6 +82,12 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.getByRole('button', { name: 'Open the dashboard' }).click();
   await expect(page.getByText('Mail traffic')).toBeVisible();
   await expect(page.getByText('Welcome aboard!')).toBeVisible();
+  // A compact, accessible in-app notification center is available on all authenticated pages.
+  const notifications = page.getByRole('button', { name: 'Notifications' });
+  await expect(notifications).toBeVisible();
+  await notifications.click();
+  await expect(page.getByRole('region', { name: 'Recent notifications' })).toBeVisible();
+  await notifications.click();
 
   // 2. Connect Resend: domain registered, DNS written, verified.
   await page.goto('/admin/integrations');
@@ -108,6 +122,19 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   });
   await page.goto('/admin/users');
   await page.getByRole('button', { name: 'Add a user' }).click();
+  const addUserDialog = page.getByRole('dialog', { name: 'Add a user' });
+  await expect(addUserDialog).toHaveAttribute('aria-modal', 'true');
+  await expect(addUserDialog).toHaveAttribute('aria-describedby', /.+/);
+  const dialogClose = addUserDialog.getByRole('button', { name: 'Close', exact: true });
+  await dialogClose.focus();
+  await page.keyboard.press('Shift+Tab');
+  await expect(addUserDialog.locator('button:not([disabled])').last()).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(dialogClose).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(addUserDialog).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Add a user' })).toBeFocused();
+  await page.getByRole('button', { name: 'Add a user' }).click();
   await page.locator('#name').fill('Bob Member');
   await page.locator('#local').fill('bob');
   await page.getByRole('button', { name: 'Add user', exact: true }).click();
@@ -132,10 +159,22 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   expect(await deliver(mail({ from: 'x@acme.test', to: 'nobody@example.com', subject: 'x', body: 'x', id: 'x@acme.test' }), 'x@acme.test', 'nobody@example.com')).toBe(400);
 
   await page.goto('/mail/all/inbox');
+  await expect(page).toHaveTitle(/NECROS Inbox · NECROS Mail/);
+  await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
   await expect(page.getByText('Q4 planning agenda')).toBeVisible();
   await expect(page.getByText('For Bob only')).toHaveCount(0);
-  await page.getByText('Q4 planning agenda').click();
-  await expect(page.getByText('Can we meet Thursday about the budget?')).toBeVisible();
+  // A keyboard user must be able to open a message, and a failed read must be retryable.
+  const failedReaderRoute = /\/api\/threads\/\d+(?:\?|$)/;
+  await page.route(failedReaderRoute, async (route) => {
+    await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { code: 'unavailable', message: 'Temporary failure' } }) });
+  });
+  const openConversation = page.getByRole('button', { name: 'Open conversation: Q4 planning agenda' });
+  await openConversation.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('alert').getByText("Couldn't load conversation")).toBeVisible({ timeout: 30_000 });
+  await page.unroute(failedReaderRoute);
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await expect(page.getByRole('article').getByText('Can we meet Thursday about the budget?')).toBeVisible();
   await page.getByRole('button', { name: 'Reply', exact: true }).last().click();
   await expect(page.locator('.ProseMirror table img[alt="Acme logo"]')).toBeVisible();
   await page.locator('.ProseMirror p').first().click();
@@ -167,6 +206,23 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
     'maya@acme.test',
     'admin@example.com',
   );
+  // Add a second independent mock conversation to verify previous/next navigation.
+  expect(await deliver(mail({
+    from: 'Maya Chen <maya@acme.test>',
+    to: 'admin@example.com',
+    subject: 'Operations update',
+    body: 'Operations plan for Friday.',
+    id: 'ops-update-1@acme.test',
+  }), 'maya@acme.test', 'admin@example.com')).toBe(200);
+  await page.goto('/mail/all/inbox');
+  await expect(page.getByRole('button', { name: 'Open conversation: Operations update' })).toBeVisible();
+  await page.getByRole('button', { name: 'Open conversation: Operations update' }).click();
+  await expect(page.getByRole('heading', { name: 'Operations update' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Next', exact: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Q4 planning agenda' })).toBeVisible();
+  await page.getByRole('button', { name: 'Previous', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Operations update' })).toBeVisible();
   await page.goto('/mail/all/inbox');
   await expect(page.locator('li').filter({ hasText: 'Q4 planning agenda' })).toHaveCount(1);
   await expect(page.locator('li').filter({ hasText: 'Q4 planning agenda' }).getByText('3', { exact: true })).toBeVisible();
@@ -176,6 +232,32 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await page.getByPlaceholder('Search mail').press('Enter');
   await expect(page.getByText('Results for “booked”')).toBeVisible();
   await expect(page.locator('li').filter({ hasText: 'Q4 planning agenda' })).toHaveCount(1);
+  await page.goto('/mail/all/inbox');
+  // Network errors must not be shown as an empty archive, and retry must recover.
+  await page.route('**/api/threads?*', async (route) => {
+    await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { code: 'unavailable', message: 'Temporary failure' } }) });
+  });
+  await page.goto('/mail/all/archive');
+  await expect(page.getByRole('alert').getByText("Couldn't load conversations")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('Nothing here')).toHaveCount(0);
+  await page.unroute('**/api/threads?*');
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await expect(page.getByText('Nothing here')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+  // The actual request is held open, showing the official Thinking Orb while refreshing.
+  await page.route('**/api/threads?*', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    await route.continue();
+  });
+  await page.getByRole('button', { name: 'Refresh' }).click();
+  await expect(page.locator('[data-thinking-orb]')).toBeVisible();
+  await expect(page.getByText('Conversations up to date')).toBeVisible({ timeout: 20_000 });
+  // Wait for every active delayed route handler before removing interception.
+  // Removing it immediately can auto-continue a request that the handler still owns.
+  await page.unrouteAll({ behavior: 'wait' });
+  await notifications.click();
+  await expect(page.getByRole('region', { name: 'Recent notifications' })).toContainText('Conversations up to date');
+  await notifications.click();
   await page.goto('/mail/all/inbox');
   await page.goto('/admin');
   await expect(page.getByText('Mail traffic')).toBeVisible();
@@ -193,8 +275,73 @@ test('setup, send, receive, reply, search and isolate members', async ({ page, b
   await bob.getByRole('button', { name: 'Save password' }).click();
   await expect(bob.getByText('For Bob only')).toBeVisible();
   await expect(bob.getByText('Q4 planning agenda')).toHaveCount(0);
-  await expect(bob.getByRole('link', { name: 'Admin' })).toHaveCount(0);
+  // Preview remains limited to rows returned by the server's mailbox membership scope.
+  await expect(bob.getByRole('button', { name: 'Open conversation: Q4 planning agenda' })).toHaveCount(0);
+  await expect(bob.getByRole('link', { name: 'NECROS Admin' })).toHaveCount(0);
   const adminApi = await bob.request.get(`${APP}/api/admin/overview`);
   expect(adminApi.status()).toBe(403);
   await bobCtx.close();
+});
+
+
+test('mobile Inbox navigation stays accessible on a phone viewport', async ({ browser }) => {
+  // Keep this separate from the full mail-flow test so a mobile regression has its own timeout
+  // and Playwright trace. The preceding test initializes the mock installation.
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  try {
+    const page = await ctx.newPage();
+    await page.goto(`${APP}/login`);
+    await expect(page.getByRole('heading', { name: 'Sign in to NECROS Inbox' })).toBeVisible();
+    await page.locator('#email').fill('admin@example.com');
+    await page.locator('#password').fill(PASSWORD);
+    await page.getByRole('button', { name: 'Sign in' }).click({ timeout: 10_000 });
+    await page.goto(`${APP}/mail/all/inbox`);
+    await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+    await page.getByRole('button', { name: 'Refresh' }).click();
+    const toast = page.locator('[data-necros-toast]').first();
+    await expect(toast).toBeVisible();
+    const toastBounds = await toast.boundingBox();
+    expect(toastBounds).not.toBeNull();
+    expect(toastBounds!.width).toBeLessThan(366); // Fits content; never the full 390px viewport.
+    expect(toastBounds!.x).toBeGreaterThanOrEqual(12);
+    expect(toastBounds!.y).toBeGreaterThan(600); // Anchored near bottom, not at the top.
+    expect(toastBounds!.y + toastBounds!.height).toBeLessThanOrEqual(844);
+    const menu = page.getByRole('button', { name: 'Menu', exact: true });
+    await expect(menu).toBeVisible({ timeout: 15_000 });
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await menu.click({ timeout: 10_000 });
+    const drawer = page.locator('#mail-folders-drawer');
+    const close = page.getByRole('button', { name: 'Close menu' });
+    await expect(drawer).toHaveAttribute('role', 'dialog');
+    await expect(drawer).toHaveAttribute('aria-modal', 'true');
+    await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(drawer.getByRole('link', { name: 'Settings' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(drawer).toHaveClass(/invisible -translate-x-full/);
+    await expect(menu).toBeFocused();
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await menu.click();
+    await close.click({ timeout: 10_000 });
+    await expect(drawer).toHaveClass(/-translate-x-full/);
+    await expect(menu).toBeFocused();
+    // Mobile pager should make adjacent conversations reachable without reopening the list.
+    await page.getByRole('button', { name: 'Open conversation: Operations update' }).click();
+    const pager = page.getByRole('navigation', { name: 'Conversation navigation' });
+    await expect(pager).toBeVisible();
+    const bounds = await pager.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(390);
+    await pager.getByRole('button', { name: 'Next conversation' }).click();
+    await expect(page.getByRole('heading', { name: 'Q4 planning agenda' })).toBeVisible();
+    await pager.getByRole('button', { name: 'Previous conversation' }).click();
+    await expect(page.getByRole('heading', { name: 'Operations update' })).toBeVisible();
+    await page.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Open conversation: Operations update' })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'NECROS Inbox' })).toBeVisible();
+  } finally {
+    await ctx.close();
+  }
 });

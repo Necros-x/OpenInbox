@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, type ReactNode, type Ref } from 'react';
 import { NavLink } from 'react-router';
 import { AlarmClock, Archive, AtSign, CalendarClock, ChevronDown, FileText, Inbox, Layers, Mails, OctagonAlert, Send, Settings, SquarePen, Star, Trash2, UserCheck, UsersRound, X } from 'lucide-react';
 import { cn, storageGet, storageSet } from '../../lib/utils';
@@ -78,6 +78,7 @@ export function MailSidebar({
   onCompose,
   onNavigate,
   onClose,
+  closeButtonRef,
 }: {
   mailboxes: Mailbox[];
   current: string;
@@ -85,6 +86,7 @@ export function MailSidebar({
   onCompose: () => void;
   onNavigate?: () => void;
   onClose?: () => void;
+  closeButtonRef?: Ref<HTMLButtonElement>;
 }) {
   const { data: session } = useSession();
   const user = session?.user;
@@ -151,8 +153,8 @@ export function MailSidebar({
       {onClose && (
         <div className="flex items-center gap-2.5 px-4 pt-3 pb-2 md:hidden">
           <LogoMark size={24} />
-          <span className="flex-1 truncate text-[15px] font-semibold">{session?.instanceName ?? 'OpenInbox'}</span>
-          <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-surface-2" aria-label="Close menu">
+          <span className="flex-1 truncate text-[15px] font-semibold">NECROS Inbox</span>
+          <button ref={closeButtonRef} type="button" onClick={onClose} className="grid h-10 w-10 place-items-center rounded-lg text-muted hover:bg-surface-2" aria-label="Close menu">
             <X className="h-[18px] w-[18px]" />
           </button>
         </div>
@@ -168,7 +170,7 @@ export function MailSidebar({
           <span className="hidden h-[18px] w-[18px] place-items-center rounded bg-white/15 font-mono text-[11px] leading-none font-medium md:grid">C</span>
         </button>
       </div>
-      <nav className="scroll-thin flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 pt-1 pb-2">
+      <nav aria-label="Mail folders" className="scroll-thin flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 pt-1 pb-2">
         {multi ? (
           <>
             <Group title="All inboxes" icon={<Layers />} tone="primary" open={!collapsed.all} onToggle={() => toggle('all')} unread={totalUnread}>

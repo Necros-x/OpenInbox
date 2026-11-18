@@ -4,6 +4,7 @@ import { get, post } from '../../lib/api';
 import { viewQuery } from '../../lib/mail';
 import type { Mailbox, ThreadDetail, ThreadSummary } from '../../lib/types';
 import { storageGet } from '../../lib/utils';
+import { useToast } from '../../components/ui/overlay';
 
 export function useMailboxes() {
   return useQuery({ queryKey: ['mailboxes'], queryFn: () => get<Mailbox[]>('/mailboxes'), staleTime: 60_000 });
@@ -27,8 +28,26 @@ export function useThreads(mailbox: string, view: string, q: string) {
   });
 }
 
+// A short stale window lets an already-authorized preview open without another
+// request; background synchronization and thread actions still invalidate it.
+export const THREAD_PREVIEW_STALE_MS = 15_000;
 export function useThread(id: number | null) {
-  return useQuery({ queryKey: ['thread', id], queryFn: () => get<ThreadDetail>(`/threads/${id}`), enabled: !!id });
+  return useQuery({
+    queryKey: ['thread', id],
+    queryFn: () => get<ThreadDetail>(`/threads/${id}`),
+    enabled: !!id,
+    staleTime: THREAD_PREVIEW_STALE_MS,
+  });
+}
+
+export function usePrefetchThread() {
+  const qc = useQueryClient();
+  return (id: number) =>
+    qc.prefetchQuery({
+      queryKey: ['thread', id],
+      queryFn: () => get<ThreadDetail>(`/threads/${id}`),
+      staleTime: THREAD_PREVIEW_STALE_MS,
+    });
 }
 
 export type Action = 'read' | 'unread' | 'star' | 'unstar' | 'archive' | 'inbox' | 'spam' | 'notspam' | 'trash' | 'delete' | 'snooze' | 'unsnooze' | 'label' | 'unlabel' | 'assign';
@@ -84,6 +103,9 @@ export function useThreadActions() {
 // Also raises a browser notification for new inbox mail while the tab is in the background.
 export function useMailSync(mailboxes: Mailbox[] | undefined) {
   const qc = useQueryClient();
+  const { info } = useToast();
+  const notifyInfo = useRef(info);
+  useEffect(() => { notifyInfo.current = info; }, [info]);
   const last = useRef<Record<string, number> | null>(null);
   const unreadRef = useRef<number>(0);
   useEffect(() => {
@@ -104,9 +126,15 @@ export function useMailSync(mailboxes: Mailbox[] | undefined) {
           qc.invalidateQueries({ queryKey: ['thread'] });
           const boxes = qc.getQueryData<Mailbox[]>(['mailboxes']) ?? [];
           const after = boxes.reduce((n, m) => n + (m.unread.inbox ?? 0), 0);
-          if (after > before && document.hidden && storageGet('oi.notify', false) && 'Notification' in window && Notification.permission === 'granted') {
-            const n = new Notification('New mail', { body: `${after - before} new conversation${after - before === 1 ? '' : 's'} in your inbox`, tag: 'openinbox-new-mail', icon: '/icon-192.png' });
-            n.onclick = () => window.focus();
+          if (after > before) {
+            const message = `${after - before} new conversation${after - before === 1 ? '' : 's'} in your inbox`;
+            // When the tab is active, announce new mail within NECROS Mail itself.
+            // When hidden, keep the existing browser Notification preference/permission rules.
+            if (!document.hidden) notifyInfo.current(message);
+            else if (storageGet('oi.notify', false) && 'Notification' in window && Notification.permission === 'granted') {
+              const n = new Notification('New mail', { body: message, tag: 'necros-mail-new-mail', icon: '/icon-192.png' });
+              n.onclick = () => window.focus();
+            }
           }
         }
       } catch {

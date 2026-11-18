@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
 import { AlarmClock, Archive, CalendarClock, Check, ChevronDown, CircleCheck, Clock, Inbox, LoaderCircle, Mail, MailOpen, Menu as MenuIcon, OctagonAlert, Paperclip, RefreshCw, Search, SearchX, SquarePen, Star, Trash2, X } from 'lucide-react';
 import { listDate } from '../../lib/format';
 import { ownAddresses, participantLabel, snoozePresets, VIEW_LABELS } from '../../lib/mail';
@@ -10,7 +10,7 @@ import { Avatar, Kbd, Skeleton } from '../../components/ui/misc';
 import { ConfirmDialog, Menu, MenuItem, MenuLabel, MenuSeparator, useToast } from '../../components/ui/overlay';
 import { labelChip } from './labels';
 import { PickTimeDialog } from './PickTimeDialog';
-import { useThreadActions, useThreads, type Action } from './data';
+import { usePrefetchThread, useThreadActions, useThreads, type Action } from './data';
 
 const OPERATORS: [string, string][] = [
   ['from:', 'Sender name or address'],
@@ -42,6 +42,8 @@ export function ThreadList({
   onSearch,
   onMenu,
   onCompose,
+  menuButtonRef,
+  menuExpanded,
   searchRef,
 }: {
   mailbox: string;
@@ -57,10 +59,13 @@ export function ThreadList({
   onSearch: (q: string) => void;
   onMenu: () => void;
   onCompose: () => void;
+  menuButtonRef?: Ref<HTMLButtonElement>;
+  menuExpanded?: boolean;
   searchRef: React.RefObject<HTMLInputElement | null>;
 }) {
   const q = useThreads(mailbox, view, query);
   const act = useThreadActions();
+  const prefetchThread = usePrefetchThread();
   const toast = useToast();
   const [search, setSearch] = useState(query);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -72,8 +77,39 @@ export function ThreadList({
   const labelsById = useMemo(() => new Map(mailboxes.flatMap((m) => m.labels.map((l) => [l.id, l] as const))), [mailboxes]);
   const sentinel = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const accessibleIds = useMemo(() => new Set(mailboxes.map((m) => m.id)), [mailboxes]);
+
+  const cancelHoverPrefetch = () => {
+    if (hoverTimer.current !== null) clearTimeout(hoverTimer.current);
+    hoverTimer.current = null;
+  };
+  const canPrefetch = (t: ThreadSummary) =>
+    t.messageCount > 0 && accessibleIds.has(t.mailboxId) &&
+    (mailbox === 'all' || mailbox === String(t.mailboxId));
+  const previewOnHover = (t: ThreadSummary, pointerType: string) => {
+    if (pointerType !== 'mouse' || !canPrefetch(t) || document.hidden) return;
+    cancelHoverPrefetch();
+    hoverTimer.current = setTimeout(() => {
+      hoverTimer.current = null;
+      void prefetchThread(t.id);
+    }, 180);
+  };
+  const previewOnFocus = (t: ThreadSummary) => {
+    if (canPrefetch(t) && !document.hidden) void prefetchThread(t.id);
+  };
+  useEffect(() => () => {
+    if (hoverTimer.current !== null) clearTimeout(hoverTimer.current);
+  }, []);
 
   useEffect(() => setSearch(query), [query]);
+
+  // Keep each folder/mailbox/search at the top on navigation, without discarding
+  // the independently keyed React Query caches or reloading the application.
+  useEffect(() => {
+    if (container.current) container.current.scrollTop = 0;
+    cancelHoverPrefetch();
+  }, [mailbox, view, query]);
 
   // Infinite scroll.
   useEffect(() => {
@@ -117,6 +153,15 @@ export function ThreadList({
     else n.add(id);
     setSelected(n);
   };
+  const refreshWithFeedback = async (retry = false) => {
+    const id = retry ? toast.retrying('Retrying mailbox refresh…') : toast.loading('Refreshing conversations…');
+    try {
+      const result = await q.refetch();
+      toast.update(id, result.isError ? 'error' : 'success', result.isError ? "Couldn't refresh conversations." : 'Conversations up to date');
+    } catch {
+      toast.update(id, 'error', "Couldn't refresh conversations. Try again.");
+    }
+  };
   const allSelected = list.length > 0 && list.every((t) => selected.has(t.id));
   const title = view.startsWith('label-') ? (labelsById.get(Number(view.slice(6)))?.name ?? 'Label') : (VIEW_LABELS[view] ?? view);
   const mailboxName = mailbox === 'all' ? (mailboxes.length > 1 ? 'All inboxes' : '') : (mailboxes.find((m) => String(m.id) === mailbox)?.address ?? '');
@@ -132,7 +177,7 @@ export function ThreadList({
           }}
           className="flex items-center gap-2"
         >
-          <button type="button" onClick={onMenu} className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-muted md:hidden" aria-label="Menu">
+          <button ref={menuButtonRef} type="button" onClick={onMenu} aria-controls="mail-folders-drawer" aria-expanded={!!menuExpanded} aria-haspopup="dialog" className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-muted md:hidden" aria-label="Menu">
             <MenuIcon className="h-5 w-5" />
           </button>
           <div
@@ -283,7 +328,13 @@ export function ThreadList({
               Empty {view}
             </Button>
           )}
-          <IconButton label="Refresh" onClick={() => q.refetch()} icon={<RefreshCw className={cn(q.isFetching && 'animate-spin text-primary-text')} />} className="h-7 w-7 max-md:hidden" />
+          {q.isRefetching && (
+            <span role="status" className="hidden items-center gap-1 text-[11px] text-faint sm:inline-flex">
+              <LoaderCircle aria-hidden="true" className="h-3 w-3 animate-spin" />
+              Updating…
+            </span>
+          )}
+          <IconButton label="Refresh" onClick={() => void refreshWithFeedback()} icon={<RefreshCw className={cn(q.isFetching && 'animate-spin text-primary-text')} />} className="h-9 w-9 sm:h-7 sm:w-7" />
         </div>
       )}
 
@@ -312,8 +363,25 @@ export function ThreadList({
               Loading…
             </div>
           </div>
+        ) : q.isError && list.length === 0 ? (
+          <div role="alert" className="flex flex-col items-center px-8 pt-20 text-center">
+            <div className="mb-4 grid h-12 w-12 place-items-center rounded-[14px] bg-danger-soft text-danger">
+              <RefreshCw aria-hidden="true" className="h-[21px] w-[21px]" />
+            </div>
+            <div className="text-[15px] font-semibold">Couldn't load conversations</div>
+            <p className="mt-1 max-w-xs text-[13px] leading-5 text-muted">
+              Check your connection and try again. Your messages haven't been deleted.
+            </p>
+            <Button variant="primary" className="mt-4" onClick={() => void refreshWithFeedback(true)}>Try again</Button>
+          </div>
         ) : list.length === 0 ? (
-          view === 'search' ? (
+          view === 'search' && !query.trim() ? (
+            <div className="flex flex-col items-center px-9 pt-[72px] text-center">
+              <Search className="mb-4 h-7 w-7 text-faint" aria-hidden="true" />
+              <div className="text-[15px] font-semibold">Search your mail</div>
+              <p className="mt-1 text-[13px] text-muted">Enter a name, address or subject to begin.</p>
+            </div>
+          ) : view === 'search' ? (
             <div className="flex flex-col items-center px-9 pt-[72px] text-center">
               <div className="mb-4 grid h-12 w-12 place-items-center rounded-[14px] bg-surface-2 text-muted">
                 <SearchX className="h-[22px] w-[22px]" />
@@ -343,8 +411,14 @@ export function ThreadList({
             </div>
           )
         ) : (
-          <ul>
-            {list.map((t, i) => {
+          <>
+            {q.isRefetchError && (
+              <div role="status" className="border-b border-warning/25 bg-warning-soft px-4 py-2 text-[12.5px] text-muted">
+                Couldn't refresh right now. Showing the last loaded conversations.
+              </div>
+            )}
+            <ul>
+              {list.map((t, i) => {
               const unread = t.unreadCount > 0;
               const active = activeId === t.id;
               const isSelected = selected.has(t.id);
@@ -394,10 +468,22 @@ export function ThreadList({
                         act([t.id], t.starred ? 'unstar' : 'star');
                       }}
                     >
-                      <Star className={cn('h-[15px] w-[15px]', t.starred ? 'fill-[oklch(0.78_0.16_78)] text-[oklch(0.78_0.16_78)]' : 'text-transparent group-hover:text-faint')} />
+                      <Star className={cn('h-[15px] w-[15px]', t.starred ? 'fill-[var(--text-faint)] text-faint' : 'text-transparent group-hover:text-faint')} />
                     </button>
                   </div>
-                  <div className="flex min-w-0 flex-1 flex-col gap-px">
+                  <button
+                    type="button"
+                    aria-label={`Open conversation: ${t.subject || '(no subject)'}`}
+                    onPointerEnter={(event) => previewOnHover(t, event.pointerType)}
+                    onPointerLeave={cancelHoverPrefetch}
+                    onFocus={() => previewOnFocus(t)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setFocusIndex(i);
+                      onOpen(t);
+                    }}
+                    className="flex min-w-0 flex-1 flex-col gap-px rounded-md text-left focus-visible:outline-2 focus-visible:outline-offset-2"
+                  >
                     <div className="flex items-center gap-1.5 text-sm leading-[19px] md:text-[13px]">
                       <span className={cn('min-w-0 flex-1 truncate', unread ? 'font-semibold' : 'font-medium', strong ? 'text-fg' : 'text-muted')}>
                         {t.draftCount > 0 && (
@@ -410,7 +496,7 @@ export function ThreadList({
                         {t.messageCount > 1 && <span className="ml-1.5 text-xs font-normal text-faint">{t.messageCount}</span>}
                       </span>
                       {t.hasAttachments && <Paperclip className="h-[13px] w-[13px] shrink-0 text-faint" />}
-                      {t.starred && <Star className="h-3 w-3 shrink-0 fill-[oklch(0.78_0.16_78)] text-[oklch(0.78_0.16_78)] md:hidden" />}
+                      {t.starred && <Star className="h-3 w-3 shrink-0 fill-[var(--text-faint)] text-faint md:hidden" />}
                       <span className={cn('shrink-0 text-xs tabular-nums', unread ? 'font-semibold text-fg' : 'text-faint')}>
                         {listDate(view === 'sent' && t.lastSentAt ? t.lastSentAt : view === 'snoozed' && t.snoozedUntil ? t.snoozedUntil : t.lastMessageAt)}
                       </span>
@@ -427,11 +513,12 @@ export function ThreadList({
                       })}
                       <span className="min-w-0 flex-1 truncate text-faint">{t.snippet}</span>
                     </div>
-                  </div>
+                  </button>
                 </li>
               );
-            })}
-          </ul>
+              })}
+            </ul>
+          </>
         )}
         <div ref={sentinel} className="h-8" />
         {q.isFetchingNextPage && (

@@ -479,7 +479,7 @@ function CreateUserDialog({ onClose, onCreated }: { onClose: () => void; onCreat
         {error && <Alert tone="danger">{error}</Alert>}
         <div className="grid grid-cols-[1fr_150px] gap-2.5">
           <Field label="Name" id="name">
-            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
+            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
           </Field>
           <Field label="Role" id="role">
             <Select id="role" value={role} onChange={(e) => setRole(e.target.value as 'member' | 'admin')}>

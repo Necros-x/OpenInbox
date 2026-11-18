@@ -1,6 +1,9 @@
 // Values shared by the Worker and the web app.
 
-export const APP_NAME = 'OpenInbox';
+export const APP_NAME = 'NECROS Mail';
+export const INBOX_NAME = 'NECROS Inbox';
+export const BRAND_TAGLINE = 'Email, refined.';
+export const BRAND_PARENT = 'NECROS HOLDINGS';
 
 // The upstream repository, used for the in-app "update available" notice. Forks and Deploy
 // button copies keep pointing here so they hear about new releases.
@@ -134,6 +137,6 @@ export const ACCOUNT_TOKENS_URL = 'https://dash.cloudflare.com/?to=/:account/api
 
 export function tokenTemplateUrl(): string {
   const keys = TOKEN_PERMISSIONS.map(({ id, type }) => ({ key: id, type }));
-  const params = new URLSearchParams({ permissionGroupKeys: JSON.stringify(keys), name: 'OpenInbox' });
+  const params = new URLSearchParams({ permissionGroupKeys: JSON.stringify(keys), name: 'NECROS Mail' });
   return `${ACCOUNT_TOKENS_URL}&${params}`;
 }

@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Outlet, Route, Routes } from 'react-router';
 import { Activity, Globe, Inbox, LayoutGrid, Plug, Settings, UsersRound, Waypoints } from 'lucide-react';
 import { useSession } from '../../lib/session';
+import { APP_NAME } from '../../../shared/constants';
 import { cn } from '../../lib/utils';
 import { useOverview } from './data';
 import { OverviewPage } from './OverviewPage';
@@ -32,7 +33,7 @@ function AdminLayout() {
     <div className="flex h-full min-h-0 flex-col md:flex-row">
       <aside className="flex shrink-0 flex-col border-b border-border md:w-[232px] md:border-r md:border-b-0">
         <nav className="scroll-thin flex gap-px overflow-x-auto p-2 md:flex-col md:px-2.5 md:py-3.5">
-          <div className="hidden h-[26px] items-center px-2.5 text-[11.5px] font-medium text-faint md:flex">Admin</div>
+          <div className="hidden h-[26px] items-center px-2.5 text-[11.5px] font-medium text-faint md:flex">NECROS Admin</div>
           {items.map(({ to, label, Icon, end }) => (
             <NavLink
               key={to}
@@ -59,7 +60,7 @@ function AdminLayout() {
             </span>
           )}
           <span className="truncate">
-            OpenInbox {session?.version} · {location.host}
+            {APP_NAME} {session?.version} · {location.host}
           </span>
         </div>
       </aside>
